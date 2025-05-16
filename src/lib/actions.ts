@@ -2,7 +2,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-// import { redirect } from 'next/navigation'; // No longer redirecting from actions directly
 import { z } from 'zod';
 import { generateBlogTitles as generateBlogTitlesFlow } from '@/ai/flows/generate-blog-titles';
 import { generateBlogImage as generateBlogImageFlow } from '@/ai/flows/generate-blog-image-flow';
@@ -85,6 +84,12 @@ export async function createPostAction(
     };
   }
 
+  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID;
+  if (!adminUid) {
+    console.error("Admin UID is not configured in environment variables.");
+    return { message: 'Configuration Error: Admin UID not set on the server.' };
+  }
+
   try {
     const data = validatedFields.data;
     const postData = {
@@ -94,6 +99,7 @@ export async function createPostAction(
         thumbnailAiHint: data.thumbnailAiHint || (data.thumbnailUrl && data.thumbnailUrl !== 'https://placehold.co/400x250.png' ? slugify(data.title).substring(0,20) : 'general topic'),
         mainImageUrl: data.mainImageUrl || 'https://placehold.co/800x450.png',
         mainImageAiHint: data.mainImageAiHint || (data.mainImageUrl && data.mainImageUrl !== 'https://placehold.co/800x450.png' ? slugify(data.title).substring(0,20) : 'article content'),
+        createdByUid: adminUid, // Add the admin UID here
     };
 
     const newPost = await addPost(postData);
@@ -102,10 +108,11 @@ export async function createPostAction(
     revalidatePath(`/posts/${newPost.slug}`);
     
     return { message: 'Post created successfully!', post: newPost };
-  } catch (e) {
+  } catch (e: any) {
     console.error('Error creating post:', e);
-    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
-    return { message: `Database Error: Failed to Create Post. Details: ${errorMessage}` };
+    // Try to get a more specific Firestore error message if available
+    const details = e.message || 'An unknown error occurred.';
+    return { message: `Database Error: Failed to Create Post. Details: ${details}` };
   }
 }
 
@@ -130,9 +137,13 @@ export async function updatePostAction(
     };
   }
 
+  // Note: For updates, you'd typically check if the user performing the update
+  // is the original author or an admin. This might also require sending UID or using Admin SDK.
+  // The `createdByUid` field is not automatically added on update here, assuming it's set on create.
+
   try {
     const data = validatedFields.data;
-    const postUpdateData: Partial<Omit<Post, 'id' | 'slug' | 'createdAt' | 'updatedAt'>> & { title?: string, content?: string } = {
+    const postUpdateData: Partial<Omit<Post, 'id' | 'slug' | 'createdAt' | 'updatedAt' | 'createdByUid'>> & { title?: string, content?: string } = {
         title: data.title,
         content: data.content,
     };
@@ -151,7 +162,7 @@ export async function updatePostAction(
 
     const updatedPost = await updatePost(id, postUpdateData);
     if (!updatedPost) {
-      return { message: 'Error: Post not found.' };
+      return { message: 'Error: Post not found or update failed.' };
     }
     revalidatePath('/');
     revalidatePath('/admin/posts');
@@ -159,10 +170,10 @@ export async function updatePostAction(
     revalidatePath(`/posts/${updatedPost.slug}`);
     
     return { message: 'Post updated successfully!', post: updatedPost };
-  } catch (e) {
+  } catch (e: any) {
     console.error('Error updating post:', e);
-    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
-    return { message: `Database Error: Failed to Update Post. Details: ${errorMessage}` };
+    const details = e.message || 'An unknown error occurred.';
+    return { message: `Database Error: Failed to Update Post. Details: ${details}` };
   }
 }
 
@@ -172,15 +183,18 @@ export async function deletePostAction(id: string): Promise<{ success: boolean; 
     if (!existingPost) {
         return { success: false, message: 'Post not found.' };
     }
+    // Note: Similar to update, delete permissions ideally check original author or admin.
     await deletePostDb(id);
     revalidatePath('/');
     revalidatePath('/admin/posts');
-    revalidatePath(`/posts/${existingPost.slug}`); // Also revalidate the deleted post's public page
+    if (existingPost.slug) {
+        revalidatePath(`/posts/${existingPost.slug}`); 
+    }
     return { success: true, message: 'Post deleted successfully.' };
-  } catch (e) {
+  } catch (e: any) {
     console.error('Error deleting post:', e);
-    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
-    return { success: false, message: `Database Error: Failed to Delete Post. Details: ${errorMessage}` };
+    const details = e.message || 'An unknown error occurred.';
+    return { success: false, message: `Database Error: Failed to Delete Post. Details: ${details}` };
   }
 }
 

@@ -1,6 +1,6 @@
 
 // This is a simplified in-memory store for demonstration purposes.
-import { doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc, query, orderBy, where as firestoreWhere, limit as firestoreLimit } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc, query, orderBy, where as firestoreWhere, limit as firestoreLimit, Timestamp } from 'firebase/firestore';
 import { db } from './firebase'; // Assuming db is exported from your firebase config file
 import { marked } from 'marked';
 
@@ -15,6 +15,7 @@ export interface Post {
   thumbnailAiHint?: string; // Hint for AI image generation/selection
   mainImageUrl?: string;
   mainImageAiHint?: string; // Hint for AI image generation/selection
+  createdByUid?: string; // UID of the user who created the post
 }
 
 // Function to generate a URL-friendly slug
@@ -33,18 +34,22 @@ export async function getPosts(options?: { limit?: number; excludeSlug?: string 
   let q = query(postsCollection, orderBy('createdAt', 'desc'));
 
   const querySnapshot = await getDocs(q);
-  let posts: Post[] = querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    slug: doc.data().slug,
-    title: doc.data().title,
-    content: doc.data().content,
-    createdAt: doc.data().createdAt.toDate(), // Convert Firebase Timestamp to Date
-    updatedAt: doc.data().updatedAt.toDate(), // Convert Firebase Timestamp to Date
-    thumbnailUrl: doc.data().thumbnailUrl,
-    thumbnailAiHint: doc.data().thumbnailAiHint,
-    mainImageUrl: doc.data().mainImageUrl,
-    mainImageAiHint: doc.data().mainImageAiHint,
-  }));
+  let posts: Post[] = querySnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+        id: doc.id,
+        slug: data.slug,
+        title: data.title,
+        content: data.content,
+        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(data.createdAt),
+        updatedAt: data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : new Date(data.updatedAt),
+        thumbnailUrl: data.thumbnailUrl,
+        thumbnailAiHint: data.thumbnailAiHint,
+        mainImageUrl: data.mainImageUrl,
+        mainImageAiHint: data.mainImageAiHint,
+        createdByUid: data.createdByUid,
+    };
+  });
 
   if (options?.excludeSlug) {
     posts = posts.filter(post => post.slug !== options.excludeSlug);
@@ -71,12 +76,13 @@ export async function getPostById(id: string): Promise<Post | undefined> {
     slug: data.slug,
     title: data.title,
     content: data.content,
-    createdAt: data.createdAt.toDate(), // Convert Firebase Timestamp to Date
-    updatedAt: data.updatedAt.toDate(), // Convert Firebase Timestamp to Date
+    createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(data.createdAt),
+    updatedAt: data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : new Date(data.updatedAt),
     thumbnailUrl: data.thumbnailUrl,
     thumbnailAiHint: data.thumbnailAiHint,
     mainImageUrl: data.mainImageUrl,
     mainImageAiHint: data.mainImageAiHint,
+    createdByUid: data.createdByUid,
   };
 }
 
@@ -96,16 +102,25 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
     slug: data.slug,
     title: data.title,
     content: data.content,
-    createdAt: data.createdAt.toDate(),
-    updatedAt: data.updatedAt.toDate(),
+    createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(data.createdAt),
+    updatedAt: data.updatedAt instanceof Timestamp ? data.updatedAt.toDate() : new Date(data.updatedAt),
     thumbnailUrl: data.thumbnailUrl,
     thumbnailAiHint: data.thumbnailAiHint,
     mainImageUrl: data.mainImageUrl,
     mainImageAiHint: data.mainImageAiHint,
+    createdByUid: data.createdByUid,
   };
 }
 
-export async function addPost(data: { title: string; content: string, thumbnailUrl?: string, thumbnailAiHint?: string, mainImageUrl?: string, mainImageAiHint?: string }): Promise<Post> {
+export async function addPost(data: { 
+    title: string; 
+    content: string; 
+    thumbnailUrl?: string; 
+    thumbnailAiHint?: string; 
+    mainImageUrl?: string; 
+    mainImageAiHint?: string;
+    createdByUid: string; // Ensure this is passed
+  }): Promise<Post> {
   const postsCollection = collection(db, 'posts');
   
   let currentSlug = slugify(data.title);
@@ -120,36 +135,40 @@ export async function addPost(data: { title: string; content: string, thumbnailU
     slugSnapshot = await getDocs(slugQuery);
   }
 
-  const newPostRef = await addDoc(postsCollection, {
+  const now = new Date();
+  const newPostDocData = {
     slug: currentSlug, 
     title: data.title,
     content: data.content,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: Timestamp.fromDate(now), // Use Firestore Timestamp
+    updatedAt: Timestamp.fromDate(now), // Use Firestore Timestamp
     thumbnailUrl: data.thumbnailUrl || `https://placehold.co/400x250.png`,
     thumbnailAiHint: data.thumbnailAiHint || 'general topic',
     mainImageUrl: data.mainImageUrl || `https://placehold.co/800x450.png`,
     mainImageAiHint: data.mainImageAiHint || 'article content',
-  });
+    createdByUid: data.createdByUid, // Store the creator's UID
+  };
 
-  const newPostSnapshot = await getDoc(newPostRef);
-  const newPostData = newPostSnapshot.data()!;
+  const newPostRef = await addDoc(postsCollection, newPostDocData);
+  const newPostSnapshot = await getDoc(newPostRef); // Fetch to confirm write and get consistent data
+  const finalPostData = newPostSnapshot.data()!;
 
   return {
     id: newPostSnapshot.id,
-    slug: newPostData.slug,
-    title: newPostData.title,
-    content: newPostData.content,
-    createdAt: newPostData.createdAt.toDate(),
-    updatedAt: newPostData.updatedAt.toDate(),
-    thumbnailUrl: newPostData.thumbnailUrl,
-    thumbnailAiHint: newPostData.thumbnailAiHint,
-    mainImageUrl: newPostData.mainImageUrl,
-    mainImageAiHint: newPostData.mainImageAiHint,
+    slug: finalPostData.slug,
+    title: finalPostData.title,
+    content: finalPostData.content,
+    createdAt: (finalPostData.createdAt as Timestamp).toDate(),
+    updatedAt: (finalPostData.updatedAt as Timestamp).toDate(),
+    thumbnailUrl: finalPostData.thumbnailUrl,
+    thumbnailAiHint: finalPostData.thumbnailAiHint,
+    mainImageUrl: finalPostData.mainImageUrl,
+    mainImageAiHint: finalPostData.mainImageAiHint,
+    createdByUid: finalPostData.createdByUid,
   };
 }
 
-export async function updatePost(id: string, data: Partial<Omit<Post, 'id' | 'createdAt' | 'updatedAt'>> & { title?: string, content?: string }): Promise<Post | undefined> {
+export async function updatePost(id: string, data: Partial<Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'createdByUid'>> & { title?: string, content?: string }): Promise<Post | undefined> {
   const postRef = doc(db, 'posts', id);
   const postSnapshot = await getDoc(postRef);
 
@@ -158,7 +177,7 @@ export async function updatePost(id: string, data: Partial<Omit<Post, 'id' | 'cr
   }
 
   const currentPostData = postSnapshot.data();
-  const updatedData: any = { ...data, updatedAt: new Date() };
+  const updatedData: any = { ...data, updatedAt: Timestamp.fromDate(new Date()) }; // Use Firestore Timestamp
 
   if (data.title && data.title !== currentPostData.title) {
     const postsCollection = collection(db, 'posts');
@@ -177,7 +196,7 @@ export async function updatePost(id: string, data: Partial<Omit<Post, 'id' | 'cr
         slugExists = slugSnapshot.docs.some(doc => doc.id !== id);
     }
     updatedData.slug = newSlug;
-  } else if (data.title === undefined && !updatedData.slug) { // Ensure slug is present if title not changing
+  } else if (data.title === undefined && !updatedData.slug) { 
     updatedData.slug = currentPostData.slug;
   }
 
@@ -191,12 +210,13 @@ export async function updatePost(id: string, data: Partial<Omit<Post, 'id' | 'cr
     slug: finalPostData.slug,
     title: finalPostData.title,
     content: finalPostData.content,
-    createdAt: finalPostData.createdAt.toDate(),
-    updatedAt: finalPostData.updatedAt.toDate(),
+    createdAt: (finalPostData.createdAt as Timestamp).toDate(),
+    updatedAt: (finalPostData.updatedAt as Timestamp).toDate(),
     thumbnailUrl: finalPostData.thumbnailUrl,
     thumbnailAiHint: finalPostData.thumbnailAiHint,
     mainImageUrl: finalPostData.mainImageUrl,
     mainImageAiHint: finalPostData.mainImageAiHint,
+    createdByUid: finalPostData.createdByUid, // Ensure this field is returned
   };
 }
 
@@ -209,10 +229,12 @@ export function formatContentForDisplay(markdownContent: string): string {
   let html = marked(markdownContent) as string;
 
   // Regex to wrap explicitly signed numbers in spans
+  // Handles numbers like +5, +5.5, +5bp, +5.5%
   html = html.replace(
     /(?<!&lt;|<|&quot;|'|\w-|[$\w])\+(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
     '<span class="text-positive">+$1</span>'
   );
+  // Handles numbers like -5, –5, -5.5, –5.5bp, -5% (hyphen or en-dash)
   html = html.replace(
     /(?<!&lt;|<|&quot;|'|\w-|[$\w])(?:-|–)(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
     '<span class="text-negative">-$1</span>'
@@ -220,3 +242,4 @@ export function formatContentForDisplay(markdownContent: string): string {
 
   return html;
 }
+
