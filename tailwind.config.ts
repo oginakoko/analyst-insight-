@@ -9,6 +9,23 @@ export default {
   ],
   theme: {
   	extend: {
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            '--tw-prose-headings': 'hsl(var(--primary))',
+            '--tw-prose-links': 'hsl(var(--accent))',
+            // You can customize other prose elements here if needed
+            // For example, to ensure strong text uses the main foreground color:
+            '--tw-prose-bold': 'hsl(var(--foreground))',
+            // To ensure links in dark mode also use the accent color:
+            '&.dark': {
+              '--tw-prose-links': 'hsl(var(--accent))',
+              '--tw-prose-headings': 'hsl(var(--primary))',
+              '--tw-prose-bold': 'hsl(var(--foreground))',
+            },
+          },
+        },
+      }),
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

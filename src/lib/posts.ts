@@ -24,13 +24,14 @@ export function slugify(text: string): string {
 }
 
 const initialContentEURUSD = `
-## Global Economic Analysis
+## Monetary Policy Divergence
+By spring 2025 both the ECB and RBA have shifted away from tightening. In mid‐April the ECB cut its deposit rate by 25 bps to +2.25%, citing a well‑entrenched disinflation path and weakening growth expectations due to trade tensions.  President Lagarde emphasized a data‑dependent, meeting‑by‑meeting approach to ensure inflation converges sustainably to the 2% target.  In contrast, the RBA has only just begun easing: it delivered its first cut since 2020 (25 bps to 4.10%) in February 2025 after inflation fell more than expected (a change of -0.2%).  RBA Governor Bullock stressed that policy is still “restrictive” and any further cuts will be gradual, pending confidence that inflation stays near target.  Markets now expect the RBA to cut again in May and twice more by year‑end as core inflation hovers near +3%, but Fed officials remain more cautious.  Thus for now Australia’s cash rate remains higher (4.10%) than the ECB’s policy rates (2.25%–2.65%), suggesting a continued interest‑rate advantage for AUD carry. A budget surplus of +0.9% of GDP was recorded.
 
-**Monetary Policy Divergence:** By spring 2025 both the ECB and RBA have shifted away from tightening. In mid‐April the ECB cut its deposit rate by 25 bps to +2.25%, citing a well‑entrenched disinflation path and weakening growth expectations due to trade tensions.  President Lagarde emphasized a data‑dependent, meeting‑by‑meeting approach to ensure inflation converges sustainably to the 2% target.  In contrast, the RBA has only just begun easing: it delivered its first cut since 2020 (25 bps to 4.10%) in February 2025 after inflation fell more than expected (a change of -0.2%).  RBA Governor Bullock stressed that policy is still “restrictive” and any further cuts will be gradual, pending confidence that inflation stays near target.  Markets now expect the RBA to cut again in May and twice more by year‑end as core inflation hovers near +3%, but Fed officials remain more cautious.  Thus for now Australia’s cash rate remains higher (4.10%) than the ECB’s policy rates (2.25%–2.65%), suggesting a continued interest‐rate advantage for AUD carry. A budget surplus of +0.9% of GDP was recorded.
+## Inflation and Growth Trends
+Inflation in both regions is moderating toward central bank targets.  Euro‑area inflation fell to ~2.2% in early 2025, with core services inflation easing as wage‑cost pressures subsided.  ECB staff project euro inflation around 2% over the medium term.  Growth is weak: Q1 GDP is tracking at roughly 0.3–0.4% quarter‑on‑quarter (about 1.0–1.5% annualized), and risks are skewed to the downside as U.S. tariffs cloud global demand, potentially leading to a -0.5% adjustment.  By contrast, Australia’s inflation is trending steadily into the 2–3% target range: headline CPI slowed to ~2.4% in February and trimmed‑mean (core) inflation is ~2.7–2.9%.  RBA forecasts now expect core inflation to fall to ~2.7% by mid‑2025.  Australian growth has rebounded: late‑2024 saw GDP growth of ~+0.6% q/q, and full‑year 2025 is forecast around 2.0–2.5%.  A tight jobs market (unemployment ~3.7–4.0%) supports spending.  Overall, Australia’s economy appears more resilient, while the eurozone faces anaemic growth. **Historical precedent:** Similar dynamics emerged in mid‑2019, when slowing global demand and commodity prices pressured the AUD relative to the EUR (then enjoying firmer growth), sending EUR/AUD sharply higher.
 
-**Inflation and Growth Trends:** Inflation in both regions is moderating toward central bank targets.  Euro‑area inflation fell to ~2.2% in early 2025, with core services inflation easing as wage‑cost pressures subsided.  ECB staff project euro inflation around 2% over the medium term.  Growth is weak: Q1 GDP is tracking at roughly 0.3–0.4% quarter‑on‑quarter (about 1.0–1.5% annualized), and risks are skewed to the downside as U.S. tariffs cloud global demand, potentially leading to a -0.5% adjustment.  By contrast, Australia’s inflation is trending steadily into the 2–3% target range: headline CPI slowed to ~2.4% in February and trimmed‐mean (core) inflation is ~2.7–2.9%.  RBA forecasts now expect core inflation to fall to ~2.7% by mid‑2025.  Australian growth has rebounded: late‑2024 saw GDP growth of ~+0.6% q/q, and full‑year 2025 is forecast around 2.0–2.5%.  A tight jobs market (unemployment ~3.7–4.0%) supports spending.  Overall, Australia’s economy appears more resilient, while the eurozone faces anaemic growth. **Historical precedent:** Similar dynamics emerged in mid‑2019, when slowing global demand and commodity prices pressured the AUD relative to the EUR (then enjoying firmer growth), sending EUR/AUD sharply higher.
-
-**Global Geopolitical Risks:** Both regions cite heightened geopolitical uncertainty.  The IMF and ECB note “unprecedented” trade‑policy headwinds (global tariffs and fragmentation) undermining world trade and investment.  The RBA also highlights U.S. tariffs on China as a key downside risk that could slow global growth by -1.2%.  These risks weigh on sentiment and may trigger safe‑haven flows.  Energy and commodity markets are sensitive: for example, renewed Middle East or Ukraine conflicts could spike oil prices (harming eurozone inflation/growth) or send capital into U.S. Treasuries and JPY.  Conversely, any détente (e.g. U.S.–China tariff rollbacks) could relieve uncertainty.  **Precedent:** In 2018–19 trade‑tension episodes, AUD sold off as commodity demand fell while EUR remained stable, driving EUR/AUD higher.
+## Global Geopolitical Risks
+Both regions cite heightened geopolitical uncertainty.  The IMF and ECB note “unprecedented” trade‑policy headwinds (global tariffs and fragmentation) undermining world trade and investment.  The RBA also highlights U.S. tariffs on China as a key downside risk that could slow global growth by -1.2%.  These risks weigh on sentiment and may trigger safe‑haven flows.  Energy and commodity markets are sensitive: for example, renewed Middle East or Ukraine conflicts could spike oil prices (harming eurozone inflation/growth) or send capital into U.S. Treasuries and JPY.  Conversely, any détente (e.g. U.S.–China tariff rollbacks) could relieve uncertainty.  **Precedent:** In 2018–19 trade‑tension episodes, AUD sold off as commodity demand fell while EUR remained stable, driving EUR/AUD higher.
 
 ## Regional & National Economic Analysis
 
@@ -40,7 +41,7 @@ const initialContentEURUSD = `
 
 **Labour Markets:** Australia’s labour market remains very tight.  Unemployment (~3.7%) and underemployment are near cycle lows, better than RBA had assumed a year ago.  The RBA does expect unemployment to rise modestly to ~+4.25%, but even that is with tight conditions.  By contrast, the eurozone unemployment rate is higher (~6.1% as of Feb 2025).  Employment growth is slowing in Europe, and wage growth has moderated, whereas in Australia wages are forecast to ease only slightly (WPI growth ~3% into 2026).
 
-**Consumer Sentiment & Spending:** Australian consumer confidence has been weak: the Westpac–Melbourne index fell to a six‑month low (~90.1) in April 2025, a drop of -2.3 points, dragged down by tariff war fears and market volatility. Retail spending is only modestly rebounding: February 2025 retail sales rose just +0.2% m/m after January’s gain, and commentators note consumers remain cautious.  Slower inflation and real income gains are the upside, but spending growth remains “tepid”.  In the euro area, consumer morale is similarly subdued: the EC’s April survey shows confidence at –16.7 (below long‑run average).  Retail volumes are roughly flat: March 2025 retail trade was flat to ‑0.1% m/m in the Eurozone.  In sum, consumers in both regions are restrained, with no clear lead.
+**Consumer Sentiment & Spending:** Australian consumer confidence has been weak: the Westpac–Melbourne index fell to a six‑month low (~90.1) in April 2025, a drop of –2.3 points, dragged down by tariff war fears and market volatility. Retail spending is only modestly rebounding: February 2025 retail sales rose just +0.2% m/m after January’s gain, and commentators note consumers remain cautious.  Slower inflation and real income gains are the upside, but spending growth remains “tepid”.  In the euro area, consumer morale is similarly subdued: the EC’s April survey shows confidence at –16.7 (below long‑run average).  Retail volumes are roughly flat: March 2025 retail trade was flat to ‑0.1% m/m in the Eurozone.  In sum, consumers in both regions are restrained, with no clear lead.
 
 **Fiscal and Debt Metrics:** Australia’s public finances are in comparatively strong shape.  Australia ran a budget surplus (~+0.9% of GDP) in 2022‑23 with gross debt ~44% of GDP. By contrast, the euro area collectively had a 2024 deficit of about –3.0% of GDP and debt around 89%.  This fiscal buffer gives Australia more policy room; Rating agencies currently view Australia’s “AAA” status favorably.  High sovereign debt and deficit ratios in Europe (especially in Italy, France) keep euro pressures elevated.  **Precedent:** Countries with surging deficits (e.g. Italy in 2018) have seen sudden swings in EUR risk premia; by contrast Australia’s stable budget tends to underpin AUD in stress periods.
 
@@ -94,14 +95,15 @@ The EUR has different drivers.  The euro often reflects broad EMU fundamentals a
 
 const initialTitle = "Fundamental Outlook for EUR/AUD (60-Day Horizon)";
 
+
 let posts: Post[] = [
   {
     id: '1',
     slug: slugify(initialTitle),
     title: initialTitle,
     content: initialContentEURUSD,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date(), // Updated to current date
+    updatedAt: new Date(), // Updated to current date
   },
   {
     id: '2',
@@ -231,17 +233,17 @@ export async function deletePost(id: string): Promise<boolean> {
 export function formatContentForDisplay(markdownContent: string): string {
   let html = marked(markdownContent) as string;
 
-  // Regex to wrap explicitly signed numbers (e.g., +10, -2.5%, +100bp, -$20) in spans
-  // This regex tries to avoid matching numbers within HTML tags or attributes.
-  // It looks for numbers that are likely part of the textual content.
-  // Positive numbers:
+  // Regex to wrap explicitly signed numbers in spans
+  // Positive numbers: looks for a + sign not preceded by certain characters (to avoid HTML attributes/tags)
+  // and followed by digits, optional decimal, optional units (bp or %)
   html = html.replace(
     /(?<!&lt;|<|&quot;|'|\w-|[$\w])\+(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
     '<span class="text-positive">+$1</span>'
   );
-  // Negative numbers:
+  // Negative numbers: looks for a - (hyphen-minus U+002D) or – (en-dash U+2013) sign
+  // with similar conditions as positive numbers.
   html = html.replace(
-    /(?<!&lt;|<|&quot;|'|\w-|[$\w])-(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
+    /(?<!&lt;|<|&quot;|'|\w-|[$\w])(?:-|–)(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
     '<span class="text-negative">-$1</span>'
   );
 
