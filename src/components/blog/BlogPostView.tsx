@@ -1,4 +1,6 @@
 
+'use client'; // Add this directive
+
 import type { Post } from '@/lib/posts';
 import { formatContentForDisplay } from '@/lib/posts';
 import { useEffect, useState } from 'react';
@@ -11,6 +13,8 @@ export function BlogPostView({ post }: BlogPostViewProps) {
   const [formattedContent, setFormattedContent] = useState('');
 
   useEffect(() => {
+    // Ensure formatContentForDisplay is safe and doesn't cause hydration issues itself
+    // For now, assuming it's okay.
     setFormattedContent(formatContentForDisplay(post.content));
   }, [post.content]);
 
