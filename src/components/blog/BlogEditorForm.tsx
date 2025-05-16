@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useEffect, useState, useActionState } from 'react';
+import { useEffect, useState } from 'react'; // Removed useActionState, will use the one from 'react'
+import { useActionState } from 'react'; // Correct import for useActionState
 import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -66,6 +67,15 @@ export function BlogEditorForm({ post, initialThumbnailUrl, initialMainImageUrl,
             description: formState.message,
             variant: "default",
         });
+        // Determine if it was a create or update action to decide redirection
+        // If 'post' prop was initially undefined, it's a create action.
+        if (!post) { // Create action
+            router.push(`/admin/posts`); // Redirect to posts list after creation
+        } else { // Update action
+             // For updates, we could stay on the page or redirect to list.
+             // Current server action was redirecting to list, so let's match that.
+            router.push('/admin/posts');
+        }
     } else if (formState?.message && formState.errors) {
         toast({
             title: "Error",
@@ -73,7 +83,7 @@ export function BlogEditorForm({ post, initialThumbnailUrl, initialMainImageUrl,
             variant: "destructive",
         });
     }
-  }, [formState, router, toast]);
+  }, [formState, router, toast, post]); // Added post to dependency array
 
   const handleGenerateTitles = async () => {
     if (!content || content.trim().length < 50) {
@@ -136,8 +146,10 @@ export function BlogEditorForm({ post, initialThumbnailUrl, initialMainImageUrl,
         </CardDescription>
       </CardHeader>
       <form action={formAction}>
+        {/* Hidden inputs to ensure values are submitted even if fields are not directly edited after AI generation */}
         <input type="hidden" name="thumbnailUrl" value={thumbnailUrl} />
         <input type="hidden" name="mainImageUrl" value={mainImageUrl} />
+
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
@@ -209,10 +221,10 @@ export function BlogEditorForm({ post, initialThumbnailUrl, initialMainImageUrl,
                 </Alert>
             )}
             <div className="space-y-1">
-                <Label htmlFor="thumbnailUrl">Thumbnail Image URL (or paste existing)</Label>
+                <Label htmlFor="thumbnailUrlDisplay">Thumbnail Image URL (or paste existing)</Label>
                 <Input
-                    id="thumbnailUrl"
-                    name="thumbnailUrl"
+                    id="thumbnailUrlDisplay" // Changed ID to avoid conflict with hidden input
+                    name="thumbnailUrlDisplay" // Changed name, hidden input will carry the value
                     value={thumbnailUrl}
                     onChange={(e) => setThumbnailUrl(e.target.value)}
                     placeholder="https://placehold.co/400x250.png or AI generated"
@@ -267,10 +279,10 @@ export function BlogEditorForm({ post, initialThumbnailUrl, initialMainImageUrl,
                 </Alert>
             )}
             <div className="space-y-1">
-                <Label htmlFor="mainImageUrl">Main Post Image URL (or paste existing)</Label>
+                <Label htmlFor="mainImageUrlDisplay">Main Post Image URL (or paste existing)</Label>
                 <Input
-                    id="mainImageUrl"
-                    name="mainImageUrl"
+                    id="mainImageUrlDisplay" // Changed ID to avoid conflict with hidden input
+                    name="mainImageUrlDisplay" // Changed name, hidden input will carry the value
                     value={mainImageUrl}
                     onChange={(e) => setMainImageUrl(e.target.value)}
                     placeholder="https://placehold.co/800x450.png or AI generated"

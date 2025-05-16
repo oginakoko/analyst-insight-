@@ -2,10 +2,10 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation'; // No longer redirecting from actions directly
 import { z } from 'zod';
 import { generateBlogTitles as generateBlogTitlesFlow } from '@/ai/flows/generate-blog-titles';
-import { generateBlogImage as generateBlogImageFlow } from '@/ai/flows/generate-blog-image-flow'; // New import
+import { generateBlogImage as generateBlogImageFlow } from '@/ai/flows/generate-blog-image-flow';
 import { addPost, updatePost, deletePost as deletePostDb, Post, getPostById, slugify } from './posts';
 
 const PostSchema = z.object({
@@ -90,9 +90,9 @@ export async function createPostAction(
         title: data.title,
         content: data.content,
         thumbnailUrl: data.thumbnailUrl || 'https://placehold.co/400x250.png',
-        thumbnailAiHint: data.thumbnailAiHint || (data.thumbnailUrl ? slugify(data.title).substring(0,20) : 'general topic'),
+        thumbnailAiHint: data.thumbnailAiHint || (data.thumbnailUrl && data.thumbnailUrl !== 'https://placehold.co/400x250.png' ? slugify(data.title).substring(0,20) : 'general topic'),
         mainImageUrl: data.mainImageUrl || 'https://placehold.co/800x450.png',
-        mainImageAiHint: data.mainImageAiHint || (data.mainImageUrl ? slugify(data.title).substring(0,20) : 'article content'),
+        mainImageAiHint: data.mainImageAiHint || (data.mainImageUrl && data.mainImageUrl !== 'https://placehold.co/800x450.png' ? slugify(data.title).substring(0,20) : 'article content'),
     };
 
     const newPost = await addPost(postData);
@@ -100,11 +100,12 @@ export async function createPostAction(
     revalidatePath('/admin/posts');
     revalidatePath(`/posts/${newPost.slug}`);
     
+    return { message: 'Post created successfully!', post: newPost };
   } catch (e) {
     console.error('Error creating post:', e);
     return { message: 'Database Error: Failed to Create Post.' };
   }
-  redirect('/admin/posts');
+  // redirect('/admin/posts'); // Removed redirect
 }
 
 export async function updatePostAction(
@@ -138,13 +139,13 @@ export async function updatePostAction(
         postUpdateData.thumbnailUrl = data.thumbnailUrl || 'https://placehold.co/400x250.png';
     }
     if (data.thumbnailAiHint || data.thumbnailAiHint === '') {
-        postUpdateData.thumbnailAiHint = data.thumbnailAiHint || (postUpdateData.thumbnailUrl !== 'https://placehold.co/400x250.png' ? slugify(data.title || '').substring(0,20) : 'general topic');
+        postUpdateData.thumbnailAiHint = data.thumbnailAiHint || (postUpdateData.thumbnailUrl && postUpdateData.thumbnailUrl !== 'https://placehold.co/400x250.png' ? slugify(data.title || '').substring(0,20) : 'general topic');
     }
      if (data.mainImageUrl || data.mainImageUrl === '') {
         postUpdateData.mainImageUrl = data.mainImageUrl || 'https://placehold.co/800x450.png';
     }
     if (data.mainImageAiHint || data.mainImageAiHint === '') {
-        postUpdateData.mainImageAiHint = data.mainImageAiHint || (postUpdateData.mainImageUrl !== 'https://placehold.co/800x450.png' ? slugify(data.title || '').substring(0,20) : 'article content');
+        postUpdateData.mainImageAiHint = data.mainImageAiHint || (postUpdateData.mainImageUrl && postUpdateData.mainImageUrl !== 'https://placehold.co/800x450.png' ? slugify(data.title || '').substring(0,20) : 'article content');
     }
 
     const updatedPost = await updatePost(id, postUpdateData);
@@ -156,11 +157,12 @@ export async function updatePostAction(
     revalidatePath(`/admin/posts/${id}/edit`);
     revalidatePath(`/posts/${updatedPost.slug}`);
     
+    return { message: 'Post updated successfully!', post: updatedPost };
   } catch (e) {
     console.error('Error updating post:', e);
     return { message: 'Database Error: Failed to Update Post.' };
   }
-  redirect('/admin/posts');
+  // redirect('/admin/posts'); // Removed redirect
 }
 
 export async function deletePostAction(id: string): Promise<{ success: boolean; message: string }> {
@@ -172,6 +174,7 @@ export async function deletePostAction(id: string): Promise<{ success: boolean; 
     await deletePostDb(id);
     revalidatePath('/');
     revalidatePath('/admin/posts');
+    revalidatePath(`/posts/${existingPost.slug}`); // Also revalidate the deleted post's public page
     return { success: true, message: 'Post deleted successfully.' };
   } catch (e) {
     console.error('Error deleting post:', e);
