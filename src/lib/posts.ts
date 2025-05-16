@@ -1,11 +1,13 @@
+
 // For a real application, replace this in-memory store with a database.
 // This is a simplified in-memory store for demonstration purposes.
+import { marked } from 'marked';
 
 export interface Post {
   id: string;
   slug: string;
   title: string;
-  content: string;
+  content: string; // Raw Markdown content
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,7 +32,7 @@ const initialContentEURUSD = `
 
 **Inflation and Growth Trends:** Inflation in both regions is moderating toward central bank targets.  Euro‑area inflation fell to ~2.2% in early 2025, with core services inflation easing as wage‑cost pressures subsided.  ECB staff project euro inflation around 2% over the medium term.  Growth is weak: Q1 GDP is tracking at roughly 0.3–0.4% quarter‑on‑quarter (about 1.0–1.5% annualized), and risks are skewed to the downside as U.S. tariffs cloud global demand.  By contrast, Australia’s inflation is trending steadily into the 2–3% target range: headline CPI slowed to ~2.4% in February and trimmed‐mean (core) inflation is ~2.7–2.9%.  RBA forecasts now expect core inflation to fall to ~2.7% by mid‑2025.  Australian growth has rebounded: late‑2024 saw GDP growth of ~0.6% q/q, and full‑year 2025 is forecast around 2.0–2.5%.  A tight jobs market (unemployment ~3.7–4.0%) supports spending.  Overall, Australia’s economy appears more resilient, while the eurozone faces anaemic growth. **Historical precedent:** Similar dynamics emerged in mid‑2019, when slowing global demand and commodity prices pressured the AUD relative to the EUR (then enjoying firmer growth), sending EUR/AUD sharply higher.
 
-**Global Geopolitical Risks:** Both regions cite heightened geopolitical uncertainty.  The IMF and ECB note “unprecedented” trade‐policy headwinds (global tariffs and fragmentation) undermining world trade and investment.  The RBA also highlights U.S. tariffs on China as a key downside risk that could slow global growth.  These risks weigh on sentiment and may trigger safe‑haven flows.  Energy and commodity markets are sensitive: for example, renewed Middle East or Ukraine conflicts could spike oil prices (harming eurozone inflation/growth) or send capital into U.S. Treasuries and JPY.  Conversely, any détente (e.g. U.S.–China tariff rollbacks) could relieve uncertainty.  **Precedent:** In 2018–19 trade‐tension episodes, AUD sold off as commodity demand fell while EUR remained stable, driving EUR/AUD higher.
+**Global Geopolitical Risks:** Both regions cite heightened geopolitical uncertainty.  The IMF and ECB note “unprecedented” trade‐policy headwinds (global tariffs and fragmentation) undermining world trade and investment.  The RBA also highlights U.S. tariffs on China as a key downside risk that could slow global growth.  These risks weigh on sentiment and may trigger safe‑haven flows.  Energy and commodity markets are sensitive: for example, renewed Middle East or Ukraine conflicts could spike oil prices (harming eurozone inflation/growth) or send capital into U.S. Treasuries and JPY.  Conversely, any détente (e.g. U.S.–China tariff rollbacks) could relieve uncertainty.  **Precedent:** In 2018–19 trade‑tension episodes, AUD sold off as commodity demand fell while EUR remained stable, driving EUR/AUD higher.
 
 ## Regional & National Economic Analysis
 
@@ -179,56 +181,8 @@ export async function deletePost(id: string): Promise<boolean> {
   return posts.length < initialLength;
 }
 
-export function formatContentForDisplay(content: string): string {
-  let html = content;
-
-  // Process headings (most specific first, multiline)
-  html = html.replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold mt-3 mb-1">$1</h3>');
-  html = html.replace(/^## (.*$)/gm, '<h2 class="text-2xl font-semibold mt-4 mb-2">$1</h2>');
-  html = html.replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold mt-6 mb-3">$1</h1>');
-  
-  // Process bold
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  const lines = html.split('\n');
-  let outputHtml = [];
-  let inList = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-
-    if (line.startsWith('* ')) {
-      if (!inList) {
-        outputHtml.push('<ul class="list-disc list-inside my-2 pl-4">');
-        inList = true;
-      }
-      outputHtml.push(`<li>${line.substring(2)}</li>`);
-    } else {
-      if (inList) {
-        outputHtml.push('</ul>');
-        inList = false;
-      }
-      // If it's not a heading (already processed), not empty, and not a list item
-      if (!line.match(/^<(?:h[1-3]|ul|li).*>/) && line.trim() !== '') {
-         // If the line is part of what looks like a paragraph continuation, don't wrap it in <p> yet.
-         // This simple parser wraps each non-blank, non-heading/list line in <p>.
-         // This may result in too many <p> tags if original text relies on single newlines within paragraphs.
-         // A more robust solution would identify paragraph blocks first.
-         // For now, this will treat each such line as a paragraph.
-        outputHtml.push(`<p class="my-1">${line}</p>`);
-      } else {
-        outputHtml.push(line); // Push already processed headings, empty lines, or list elements
-      }
-    }
-  }
-
-  if (inList) { // Close list if file ends with list items
-    outputHtml.push('</ul>');
-  }
-  
-  // Join lines and attempt to merge consecutive <p> tags if they were due to single newlines.
-  // This is tricky; a simpler approach is to ensure CSS handles spacing or content is authored with double newlines for paragraphs.
-  // The current logic might over-generate <p> tags.
-  // For this scaffold, we'll accept this limitation.
-  return outputHtml.join('\n');
+export function formatContentForDisplay(markdownContent: string): string {
+  // Configure marked options if needed, e.g., for GFM, breaks, etc.
+  // marked.setOptions({ gfm: true, breaks: true });
+  return marked(markdownContent) as string;
 }
