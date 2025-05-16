@@ -4,7 +4,7 @@
 import { useEffect, useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image'; // Added import for next/image
+import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -218,10 +218,10 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
                 <p className="text-sm text-destructive">{formState.errors.thumbnailUrl.join(', ')}</p>
                 )}
             </div>
-            {thumbnailUrl && thumbnailUrl.startsWith('data:image') && (
+            {thumbnailUrl && (
                 <div className="mt-2">
-                    <Label>Generated Thumbnail Preview:</Label>
-                    <Image src={thumbnailUrl} alt="Generated Thumbnail" width={200} height={125} className="rounded border" data-ai-hint={thumbnailAiHint || 'generated image'}/>
+                    <Label>Thumbnail Preview:</Label>
+                    <Image src={thumbnailUrl} alt="Thumbnail Preview" width={200} height={125} className="rounded border object-cover" data-ai-hint={thumbnailAiHint || 'image preview'}/>
                 </div>
             )}
           </div>
@@ -276,10 +276,10 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
                     <p className="text-sm text-destructive">{formState.errors.mainImageUrl.join(', ')}</p>
                 )}
             </div>
-            {mainImageUrl && mainImageUrl.startsWith('data:image') && (
+            {mainImageUrl && (
                 <div className="mt-2">
-                    <Label>Generated Main Image Preview:</Label>
-                    <Image src={mainImageUrl} alt="Generated Main Image" width={400} height={225} className="rounded border" data-ai-hint={mainImageAiHint || 'generated image'}/>
+                    <Label>Main Image Preview:</Label>
+                    <Image src={mainImageUrl} alt="Main Image Preview" width={400} height={225} className="rounded border object-cover" data-ai-hint={mainImageAiHint || 'image preview'}/>
                 </div>
             )}
           </div>
@@ -336,5 +336,3 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
     </Card>
   );
 }
-
-    
