@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { MountainIcon } from 'lucide-react';
+import { ThemeToggle } from './theme-toggle';
 
 export function Header() {
   return (
@@ -24,6 +25,7 @@ export function Header() {
           >
             Admin
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
