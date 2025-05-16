@@ -4,16 +4,17 @@
 import { useEffect, useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // Added import for next/image
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { SparklesIcon, Loader2, ImageIcon, Wand2 } from 'lucide-react'; // Added Wand2
+import { SparklesIcon, Loader2, ImageIcon, Wand2 } from 'lucide-react';
 import type { Post } from '@/lib/posts';
 import type { FormState } from '@/lib/actions';
-import { generateTitlesAction, generateImageAction } from '@/lib/actions'; // Added generateImageAction
+import { generateTitlesAction, generateImageAction } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 
 interface BlogEditorFormProps {
@@ -335,3 +336,5 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
     </Card>
   );
 }
+
+    
