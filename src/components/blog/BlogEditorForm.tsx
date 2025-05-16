@@ -19,6 +19,8 @@ import { useToast } from '@/hooks/use-toast';
 
 interface BlogEditorFormProps {
   post?: Post;
+  initialThumbnailUrl?: string;
+  initialMainImageUrl?: string;
   action: (
     prevState: FormState | undefined,
     formData: FormData
@@ -35,7 +37,7 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
-export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
+export function BlogEditorForm({ post, initialThumbnailUrl, initialMainImageUrl, action }: BlogEditorFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const initialState: FormState = { message: '', errors: {} };
@@ -43,9 +45,9 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
 
   const [title, setTitle] = useState(post?.title || '');
   const [content, setContent] = useState(post?.content || '');
-  const [thumbnailUrl, setThumbnailUrl] = useState(post?.thumbnailUrl || '');
+  const [thumbnailUrl, setThumbnailUrl] = useState(initialThumbnailUrl || post?.thumbnailUrl || '');
   const [thumbnailAiHint, setThumbnailAiHint] = useState(post?.thumbnailAiHint || '');
-  const [mainImageUrl, setMainImageUrl] = useState(post?.mainImageUrl || '');
+  const [mainImageUrl, setMainImageUrl] = useState(initialMainImageUrl || post?.mainImageUrl || '');
   const [mainImageAiHint, setMainImageAiHint] = useState(post?.mainImageAiHint || '');
   
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
@@ -134,6 +136,8 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
         </CardDescription>
       </CardHeader>
       <form action={formAction}>
+        <input type="hidden" name="thumbnailUrl" value={thumbnailUrl} />
+        <input type="hidden" name="mainImageUrl" value={mainImageUrl} />
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
