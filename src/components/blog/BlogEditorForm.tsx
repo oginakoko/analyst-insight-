@@ -10,10 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { SparklesIcon, Loader2, ImageIcon } from 'lucide-react';
+import { SparklesIcon, Loader2, ImageIcon, Wand2 } from 'lucide-react'; // Added Wand2
 import type { Post } from '@/lib/posts';
 import type { FormState } from '@/lib/actions';
-import { generateTitlesAction } from '@/lib/actions';
+import { generateTitlesAction, generateImageAction } from '@/lib/actions'; // Added generateImageAction
 import { useToast } from '@/hooks/use-toast';
 
 interface BlogEditorFormProps {
@@ -51,6 +51,11 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
   const [isGeneratingTitles, setIsGeneratingTitles] = useState(false);
   const [titleGenerationError, setTitleGenerationError] = useState<string | null>(null);
 
+  const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
+  const [thumbnailGenerationError, setThumbnailGenerationError] = useState<string | null>(null);
+  const [isGeneratingMainImage, setIsGeneratingMainImage] = useState(false);
+  const [mainImageGenerationError, setMainImageGenerationError] = useState<string | null>(null);
+
   useEffect(() => {
     if (formState?.message && !formState.errors && formState.post) { 
         toast({
@@ -67,7 +72,6 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
     }
   }, [formState, router, toast]);
 
-
   const handleGenerateTitles = async () => {
     if (!content || content.trim().length < 50) {
       setTitleGenerationError('Content is too short. Please write at least 50 characters.');
@@ -83,6 +87,40 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
     } else {
       setTitleGenerationError(result.error || 'Failed to generate titles.');
       setSuggestedTitles([]);
+    }
+  };
+
+  const handleGenerateImage = async (type: 'thumbnail' | 'mainImage') => {
+    const hint = type === 'thumbnail' ? thumbnailAiHint : mainImageAiHint;
+    if (!hint || hint.trim() === '') {
+      const errorMsg = 'Please provide an AI hint for the image.';
+      if (type === 'thumbnail') setThumbnailGenerationError(errorMsg);
+      else setMainImageGenerationError(errorMsg);
+      return;
+    }
+
+    if (type === 'thumbnail') {
+      setIsGeneratingThumbnail(true);
+      setThumbnailGenerationError(null);
+    } else {
+      setIsGeneratingMainImage(true);
+      setMainImageGenerationError(null);
+    }
+
+    const result = await generateImageAction(hint);
+
+    if (type === 'thumbnail') setIsGeneratingThumbnail(false);
+    else setIsGeneratingMainImage(false);
+
+    if (result.imageDataUri) {
+      if (type === 'thumbnail') setThumbnailUrl(result.imageDataUri);
+      else setMainImageUrl(result.imageDataUri);
+      toast({ title: "Image Generated!", description: `${type === 'thumbnail' ? 'Thumbnail' : 'Main image'} has been generated and URL updated.` });
+    } else {
+      const errorMsg = result.error || `Failed to generate ${type === 'thumbnail' ? 'thumbnail' : 'main image'}.`;
+      if (type === 'thumbnail') setThumbnailGenerationError(errorMsg);
+      else setMainImageGenerationError(errorMsg);
+      toast({ title: "Image Generation Error", description: errorMsg, variant: "destructive" });
     }
   };
 
@@ -129,26 +167,14 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="thumbnailUrl" className="flex items-center">
-                <ImageIcon className="w-4 h-4 mr-2 text-muted-foreground" />
-                Thumbnail Image URL
-              </Label>
-              <Input
-                id="thumbnailUrl"
-                name="thumbnailUrl"
-                value={thumbnailUrl}
-                onChange={(e) => setThumbnailUrl(e.target.value)}
-                placeholder="https://placehold.co/400x250.png"
-                className={formState?.errors?.thumbnailUrl ? 'border-destructive' : ''}
-              />
-              {formState?.errors?.thumbnailUrl && (
-              <p className="text-sm text-destructive">{formState.errors.thumbnailUrl.join(', ')}</p>
-            )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="thumbnailAiHint">Thumbnail AI Hint (1-2 words)</Label>
+          {/* Thumbnail Section */}
+          <div className="space-y-2 border p-4 rounded-md">
+            <h3 className="text-lg font-medium flex items-center">
+              <ImageIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+              Thumbnail Image
+            </h3>
+            <div className="space-y-1">
+              <Label htmlFor="thumbnailAiHint">AI Hint (1-2 words for generation)</Label>
               <Input
                 id="thumbnailAiHint"
                 name="thumbnailAiHint"
@@ -158,47 +184,107 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
                 className={formState?.errors?.thumbnailAiHint ? 'border-destructive' : ''}
               />
               {formState?.errors?.thumbnailAiHint && (
-              <p className="text-sm text-destructive">{formState.errors.thumbnailAiHint.join(', ')}</p>
+                <p className="text-sm text-destructive">{formState.errors.thumbnailAiHint.join(', ')}</p>
+              )}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleGenerateImage('thumbnail')}
+              disabled={isGeneratingThumbnail || !thumbnailAiHint.trim()}
+              className="mb-2"
+            >
+              {isGeneratingThumbnail ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+              Generate Thumbnail with AI
+            </Button>
+            {thumbnailGenerationError && (
+                <Alert variant="destructive" className="mb-2">
+                    <AlertDescription>{thumbnailGenerationError}</AlertDescription>
+                </Alert>
             )}
+            <div className="space-y-1">
+                <Label htmlFor="thumbnailUrl">Thumbnail Image URL (or paste existing)</Label>
+                <Input
+                    id="thumbnailUrl"
+                    name="thumbnailUrl"
+                    value={thumbnailUrl}
+                    onChange={(e) => setThumbnailUrl(e.target.value)}
+                    placeholder="https://placehold.co/400x250.png or AI generated"
+                    className={formState?.errors?.thumbnailUrl ? 'border-destructive' : ''}
+                />
+                {formState?.errors?.thumbnailUrl && (
+                <p className="text-sm text-destructive">{formState.errors.thumbnailUrl.join(', ')}</p>
+                )}
             </div>
+            {thumbnailUrl && thumbnailUrl.startsWith('data:image') && (
+                <div className="mt-2">
+                    <Label>Generated Thumbnail Preview:</Label>
+                    <Image src={thumbnailUrl} alt="Generated Thumbnail" width={200} height={125} className="rounded border" data-ai-hint={thumbnailAiHint || 'generated image'}/>
+                </div>
+            )}
           </div>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="mainImageUrl" className="flex items-center">
-                <ImageIcon className="w-4 h-4 mr-2 text-muted-foreground" />
-                Main Post Image URL
-              </Label>
-              <Input
-                id="mainImageUrl"
-                name="mainImageUrl"
-                value={mainImageUrl}
-                onChange={(e) => setMainImageUrl(e.target.value)}
-                placeholder="https://placehold.co/800x450.png"
-                className={formState?.errors?.mainImageUrl ? 'border-destructive' : ''}
-              />
-              {formState?.errors?.mainImageUrl && (
-                <p className="text-sm text-destructive">{formState.errors.mainImageUrl.join(', ')}</p>
-              )}
+          {/* Main Image Section */}
+          <div className="space-y-2 border p-4 rounded-md">
+            <h3 className="text-lg font-medium flex items-center">
+                <ImageIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                Main Post Image
+            </h3>
+            <div className="space-y-1">
+                <Label htmlFor="mainImageAiHint">AI Hint (1-2 words for generation)</Label>
+                <Input
+                    id="mainImageAiHint"
+                    name="mainImageAiHint"
+                    value={mainImageAiHint}
+                    onChange={(e) => setMainImageAiHint(e.target.value)}
+                    placeholder="e.g., finance growth"
+                    className={formState?.errors?.mainImageAiHint ? 'border-destructive' : ''}
+                />
+                {formState?.errors?.mainImageAiHint && (
+                    <p className="text-sm text-destructive">{formState.errors.mainImageAiHint.join(', ')}</p>
+                )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="mainImageAiHint">Main Image AI Hint (1-2 words)</Label>
-              <Input
-                id="mainImageAiHint"
-                name="mainImageAiHint"
-                value={mainImageAiHint}
-                onChange={(e) => setMainImageAiHint(e.target.value)}
-                placeholder="e.g., finance growth"
-                className={formState?.errors?.mainImageAiHint ? 'border-destructive' : ''}
-              />
-              {formState?.errors?.mainImageAiHint && (
-                <p className="text-sm text-destructive">{formState.errors.mainImageAiHint.join(', ')}</p>
-              )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleGenerateImage('mainImage')}
+              disabled={isGeneratingMainImage || !mainImageAiHint.trim()}
+              className="mb-2"
+            >
+              {isGeneratingMainImage ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+              Generate Main Image with AI
+            </Button>
+            {mainImageGenerationError && (
+                <Alert variant="destructive" className="mb-2">
+                    <AlertDescription>{mainImageGenerationError}</AlertDescription>
+                </Alert>
+            )}
+            <div className="space-y-1">
+                <Label htmlFor="mainImageUrl">Main Post Image URL (or paste existing)</Label>
+                <Input
+                    id="mainImageUrl"
+                    name="mainImageUrl"
+                    value={mainImageUrl}
+                    onChange={(e) => setMainImageUrl(e.target.value)}
+                    placeholder="https://placehold.co/800x450.png or AI generated"
+                    className={formState?.errors?.mainImageUrl ? 'border-destructive' : ''}
+                />
+                {formState?.errors?.mainImageUrl && (
+                    <p className="text-sm text-destructive">{formState.errors.mainImageUrl.join(', ')}</p>
+                )}
             </div>
+            {mainImageUrl && mainImageUrl.startsWith('data:image') && (
+                <div className="mt-2">
+                    <Label>Generated Main Image Preview:</Label>
+                    <Image src={mainImageUrl} alt="Generated Main Image" width={400} height={225} className="rounded border" data-ai-hint={mainImageAiHint || 'generated image'}/>
+                </div>
+            )}
           </div>
-
 
           <div className="space-y-4 pt-4 border-t">
+            <Label>Title Generation</Label>
             <Button
               type="button"
               variant="outline"

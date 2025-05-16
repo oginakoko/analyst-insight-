@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -17,10 +18,18 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // Allow data URIs for AI generated images
+    dangerouslyAllowSVG: true, 
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: ['placehold.co'], // Keep existing domains if any
+    // For Next.js 14+, remotePatterns is preferred but domains might still be useful for data URIs in some contexts.
+    // However, for data URIs, the main thing is to ensure they are not blocked by CSP if you have one.
+    // Next/image handles data URIs directly without needing them in remotePatterns.
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb', // Optional: Increase if blog posts are very large
+      bodySizeLimit: '5mb', // Increased for potentially larger image data URIs
     },
   },
 };
