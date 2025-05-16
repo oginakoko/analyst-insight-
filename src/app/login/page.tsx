@@ -30,7 +30,7 @@ export default function LoginPage() {
   }, [user, authLoading, router, redirect]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); 
     setError(null);
     setIsLoggingInEmail(true);
     try {
