@@ -41,7 +41,8 @@ export async function generateTitlesAction(
     return { titles: result.titles };
   } catch (e) {
     console.error('Error generating titles:', e);
-    return { error: 'Failed to generate titles. Please try again.' };
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+    return { error: `Failed to generate titles. Details: ${errorMessage}` };
   }
 }
 
@@ -103,9 +104,9 @@ export async function createPostAction(
     return { message: 'Post created successfully!', post: newPost };
   } catch (e) {
     console.error('Error creating post:', e);
-    return { message: 'Database Error: Failed to Create Post.' };
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+    return { message: `Database Error: Failed to Create Post. Details: ${errorMessage}` };
   }
-  // redirect('/admin/posts'); // Removed redirect
 }
 
 export async function updatePostAction(
@@ -160,9 +161,9 @@ export async function updatePostAction(
     return { message: 'Post updated successfully!', post: updatedPost };
   } catch (e) {
     console.error('Error updating post:', e);
-    return { message: 'Database Error: Failed to Update Post.' };
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+    return { message: `Database Error: Failed to Update Post. Details: ${errorMessage}` };
   }
-  // redirect('/admin/posts'); // Removed redirect
 }
 
 export async function deletePostAction(id: string): Promise<{ success: boolean; message: string }> {
@@ -178,6 +179,8 @@ export async function deletePostAction(id: string): Promise<{ success: boolean; 
     return { success: true, message: 'Post deleted successfully.' };
   } catch (e) {
     console.error('Error deleting post:', e);
-    return { success: false, message: 'Database Error: Failed to Delete Post.' };
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+    return { success: false, message: `Database Error: Failed to Delete Post. Details: ${errorMessage}` };
   }
 }
+
