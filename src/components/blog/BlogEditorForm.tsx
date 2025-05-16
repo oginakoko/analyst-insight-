@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState, useActionState } from 'react'; // Changed import
+import { useEffect, useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { SparklesIcon, Loader2 } from 'lucide-react';
+import { SparklesIcon, Loader2, ImageIcon } from 'lucide-react';
 import type { Post } from '@/lib/posts';
 import type { FormState } from '@/lib/actions';
 import { generateTitlesAction } from '@/lib/actions';
@@ -38,23 +38,26 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const initialState: FormState = { message: '', errors: {} };
-  // Updated to use React.useActionState
   const [formState, formAction] = useActionState(action, initialState);
 
   const [title, setTitle] = useState(post?.title || '');
   const [content, setContent] = useState(post?.content || '');
+  const [thumbnailUrl, setThumbnailUrl] = useState(post?.thumbnailUrl || '');
+  const [thumbnailAiHint, setThumbnailAiHint] = useState(post?.thumbnailAiHint || '');
+  const [mainImageUrl, setMainImageUrl] = useState(post?.mainImageUrl || '');
+  const [mainImageAiHint, setMainImageAiHint] = useState(post?.mainImageAiHint || '');
+  
   const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
   const [isGeneratingTitles, setIsGeneratingTitles] = useState(false);
   const [titleGenerationError, setTitleGenerationError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (formState?.message && !formState.errors && formState.post) { // Successfully created/updated
+    if (formState?.message && !formState.errors && formState.post) { 
         toast({
             title: "Success!",
             description: formState.message,
             variant: "default",
         });
-        // Redirect is handled by the server action itself
     } else if (formState?.message && formState.errors) {
         toast({
             title: "Error",
@@ -84,7 +87,7 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
         <CardTitle>{post ? 'Edit Post' : 'Create New Post'}</CardTitle>
         <CardDescription>
@@ -110,7 +113,7 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="content">Content</Label>
+            <Label htmlFor="content">Content (Markdown)</Label>
             <Textarea
               id="content"
               name="content"
@@ -126,7 +129,76 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="thumbnailUrl" className="flex items-center">
+                <ImageIcon className="w-4 h-4 mr-2 text-muted-foreground" />
+                Thumbnail Image URL
+              </Label>
+              <Input
+                id="thumbnailUrl"
+                name="thumbnailUrl"
+                value={thumbnailUrl}
+                onChange={(e) => setThumbnailUrl(e.target.value)}
+                placeholder="https://placehold.co/400x250.png"
+                className={formState?.errors?.thumbnailUrl ? 'border-destructive' : ''}
+              />
+              {formState?.errors?.thumbnailUrl && (
+              <p className="text-sm text-destructive">{formState.errors.thumbnailUrl.join(', ')}</p>
+            )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="thumbnailAiHint">Thumbnail AI Hint (1-2 words)</Label>
+              <Input
+                id="thumbnailAiHint"
+                name="thumbnailAiHint"
+                value={thumbnailAiHint}
+                onChange={(e) => setThumbnailAiHint(e.target.value)}
+                placeholder="e.g., abstract tech"
+                className={formState?.errors?.thumbnailAiHint ? 'border-destructive' : ''}
+              />
+              {formState?.errors?.thumbnailAiHint && (
+              <p className="text-sm text-destructive">{formState.errors.thumbnailAiHint.join(', ')}</p>
+            )}
+            </div>
+          </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="mainImageUrl" className="flex items-center">
+                <ImageIcon className="w-4 h-4 mr-2 text-muted-foreground" />
+                Main Post Image URL
+              </Label>
+              <Input
+                id="mainImageUrl"
+                name="mainImageUrl"
+                value={mainImageUrl}
+                onChange={(e) => setMainImageUrl(e.target.value)}
+                placeholder="https://placehold.co/800x450.png"
+                className={formState?.errors?.mainImageUrl ? 'border-destructive' : ''}
+              />
+              {formState?.errors?.mainImageUrl && (
+                <p className="text-sm text-destructive">{formState.errors.mainImageUrl.join(', ')}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="mainImageAiHint">Main Image AI Hint (1-2 words)</Label>
+              <Input
+                id="mainImageAiHint"
+                name="mainImageAiHint"
+                value={mainImageAiHint}
+                onChange={(e) => setMainImageAiHint(e.target.value)}
+                placeholder="e.g., finance growth"
+                className={formState?.errors?.mainImageAiHint ? 'border-destructive' : ''}
+              />
+              {formState?.errors?.mainImageAiHint && (
+                <p className="text-sm text-destructive">{formState.errors.mainImageAiHint.join(', ')}</p>
+              )}
+            </div>
+          </div>
+
+
+          <div className="space-y-4 pt-4 border-t">
             <Button
               type="button"
               variant="outline"
@@ -168,7 +240,7 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
           <SubmitButton label={post ? 'Update Post' : 'Create Post'} />
         </CardFooter>
       </form>
-      {formState?.message && !formState.errors && !formState.post && ( // General error not tied to fields
+      {formState?.message && !formState.errors && !formState.post && ( 
         <Alert variant="destructive" className="mt-4">
            <AlertTitle>Error</AlertTitle>
            <AlertDescription>{formState.message}</AlertDescription>

@@ -1,14 +1,19 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { generateBlogTitles as generateBlogTitlesFlow } from '@/ai/flows/generate-blog-titles';
-import { addPost, updatePost, deletePost as deletePostDb, Post, getPostById } from './posts';
+import { addPost, updatePost, deletePost as deletePostDb, Post, getPostById, slugify } from './posts';
 
 const PostSchema = z.object({
   title: z.string().min(3, { message: 'Title must be at least 3 characters long.' }),
   content: z.string().min(10, { message: 'Content must be at least 10 characters long.' }),
+  thumbnailUrl: z.string().url({ message: 'Please enter a valid URL for the thumbnail.' }).optional().or(z.literal('')),
+  thumbnailAiHint: z.string().max(50, { message: 'Thumbnail AI hint too long.'}).optional(), // Max 2 words roughly
+  mainImageUrl: z.string().url({ message: 'Please enter a valid URL for the main image.' }).optional().or(z.literal('')),
+  mainImageAiHint: z.string().max(50, { message: 'Main image AI hint too long.'}).optional(),
 });
 
 export type FormState = {
@@ -16,9 +21,12 @@ export type FormState = {
   errors?: {
     title?: string[];
     content?: string[];
+    thumbnailUrl?: string[];
+    thumbnailAiHint?: string[];
+    mainImageUrl?: string[];
+    mainImageAiHint?: string[];
   };
-  post?: Post;
-  suggestedTitles?: string[];
+  post?: Post; // Return the created/updated post
 };
 
 export async function generateTitlesAction(
@@ -43,6 +51,10 @@ export async function createPostAction(
   const validatedFields = PostSchema.safeParse({
     title: formData.get('title'),
     content: formData.get('content'),
+    thumbnailUrl: formData.get('thumbnailUrl'),
+    thumbnailAiHint: formData.get('thumbnailAiHint'),
+    mainImageUrl: formData.get('mainImageUrl'),
+    mainImageAiHint: formData.get('mainImageAiHint'),
   });
 
   if (!validatedFields.success) {
@@ -53,19 +65,27 @@ export async function createPostAction(
   }
 
   try {
-    const newPost = await addPost(validatedFields.data);
+    // Ensure default placeholders if URLs are empty strings but hints might exist
+    const data = validatedFields.data;
+    const postData = {
+        title: data.title,
+        content: data.content,
+        thumbnailUrl: data.thumbnailUrl || 'https://placehold.co/400x250.png',
+        thumbnailAiHint: data.thumbnailAiHint || (data.thumbnailUrl ? slugify(data.title).substring(0,20) : 'general topic'),
+        mainImageUrl: data.mainImageUrl || 'https://placehold.co/800x450.png',
+        mainImageAiHint: data.mainImageAiHint || (data.mainImageUrl ? slugify(data.title).substring(0,20) : 'article content'),
+    };
+
+    const newPost = await addPost(postData);
     revalidatePath('/');
     revalidatePath('/admin/posts');
     revalidatePath(`/posts/${newPost.slug}`);
-    // Instead of redirecting from action, return success and redirect in component or use new useFormState hook features
-    // For now, we'll return a success message and the component can redirect.
-    // Or, simply redirect here if that's preferred.
+    
   } catch (e) {
     console.error('Error creating post:', e);
     return { message: 'Database Error: Failed to Create Post.' };
   }
   redirect('/admin/posts');
-  // return { message: "Post created successfully!", post: newPost }; // This won't be reached due to redirect
 }
 
 export async function updatePostAction(
@@ -76,6 +96,10 @@ export async function updatePostAction(
   const validatedFields = PostSchema.safeParse({
     title: formData.get('title'),
     content: formData.get('content'),
+    thumbnailUrl: formData.get('thumbnailUrl'),
+    thumbnailAiHint: formData.get('thumbnailAiHint'),
+    mainImageUrl: formData.get('mainImageUrl'),
+    mainImageAiHint: formData.get('mainImageAiHint'),
   });
 
   if (!validatedFields.success) {
@@ -86,7 +110,27 @@ export async function updatePostAction(
   }
 
   try {
-    const updatedPost = await updatePost(id, validatedFields.data);
+    const data = validatedFields.data;
+    // Prepare data for update, ensuring optional fields are handled
+    const postUpdateData: Partial<Omit<Post, 'id' | 'slug' | 'createdAt' | 'updatedAt'>> & { title?: string, content?: string } = {
+        title: data.title,
+        content: data.content,
+    };
+    if (data.thumbnailUrl || data.thumbnailUrl === '') { // Allow clearing URL
+        postUpdateData.thumbnailUrl = data.thumbnailUrl || 'https://placehold.co/400x250.png';
+    }
+    if (data.thumbnailAiHint || data.thumbnailAiHint === '') {
+        postUpdateData.thumbnailAiHint = data.thumbnailAiHint || (postUpdateData.thumbnailUrl !== 'https://placehold.co/400x250.png' ? slugify(data.title || '').substring(0,20) : 'general topic');
+    }
+     if (data.mainImageUrl || data.mainImageUrl === '') {
+        postUpdateData.mainImageUrl = data.mainImageUrl || 'https://placehold.co/800x450.png';
+    }
+    if (data.mainImageAiHint || data.mainImageAiHint === '') {
+        postUpdateData.mainImageAiHint = data.mainImageAiHint || (postUpdateData.mainImageUrl !== 'https://placehold.co/800x450.png' ? slugify(data.title || '').substring(0,20) : 'article content');
+    }
+
+
+    const updatedPost = await updatePost(id, postUpdateData);
     if (!updatedPost) {
       return { message: 'Error: Post not found.' };
     }
@@ -94,6 +138,7 @@ export async function updatePostAction(
     revalidatePath('/admin/posts');
     revalidatePath(`/admin/posts/${id}/edit`);
     revalidatePath(`/posts/${updatedPost.slug}`);
+    
   } catch (e) {
     console.error('Error updating post:', e);
     return { message: 'Database Error: Failed to Update Post.' };
@@ -110,7 +155,6 @@ export async function deletePostAction(id: string): Promise<{ success: boolean; 
     await deletePostDb(id);
     revalidatePath('/');
     revalidatePath('/admin/posts');
-    // No need to revalidate individual post page as it's deleted.
     return { success: true, message: 'Post deleted successfully.' };
   } catch (e) {
     console.error('Error deleting post:', e);

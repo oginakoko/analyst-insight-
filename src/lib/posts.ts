@@ -10,6 +10,10 @@ export interface Post {
   content: string; // Raw Markdown content
   createdAt: Date;
   updatedAt: Date;
+  thumbnailUrl?: string;
+  thumbnailAiHint?: string; // Hint for AI image generation/selection
+  mainImageUrl?: string;
+  mainImageAiHint?: string; // Hint for AI image generation/selection
 }
 
 // Function to generate a URL-friendly slug
@@ -102,8 +106,12 @@ let posts: Post[] = [
     slug: slugify(initialTitle),
     title: initialTitle,
     content: initialContentEURUSD,
-    createdAt: new Date(), // Updated to current date
-    updatedAt: new Date(), // Updated to current date
+    createdAt: new Date(), 
+    updatedAt: new Date(),
+    thumbnailUrl: 'https://placehold.co/400x250.png',
+    thumbnailAiHint: 'currency trading',
+    mainImageUrl: 'https://placehold.co/800x450.png',
+    mainImageAiHint: 'stock chart',
   },
   {
     id: '2',
@@ -124,8 +132,12 @@ Central banks often resort to QE when traditional monetary policy tools, like ad
 - **Currency Devaluation**: Increased money supply can devalue the currency, e.g. a -10% drop against major pairs.
 - **Moral Hazard**: Critics argue it can encourage excessive risk-taking by financial institutions.
 `,
-    createdAt: new Date(new Date().setDate(new Date().getDate() - 1)), // Yesterday
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 1)), 
     updatedAt: new Date(new Date().setDate(new Date().getDate() - 1)),
+    thumbnailUrl: 'https://placehold.co/400x250.png',
+    thumbnailAiHint: 'money printing',
+    mainImageUrl: 'https://placehold.co/800x450.png',
+    mainImageAiHint: 'central bank',
   },
   {
     id: '3',
@@ -143,8 +155,12 @@ Oil prices are notoriously sensitive to geopolitical events. Major oil-producing
 ### Recent Examples:
 The conflict in Ukraine led to significant disruptions in Russian oil and gas supplies, causing energy prices to soar in 2022. Anticipated supply chain improvements could bring prices down by -$5/barrel.
 `,
-    createdAt: new Date(new Date().setDate(new Date().getDate() - 2)), // Day before yesterday
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 2)), 
     updatedAt: new Date(new Date().setDate(new Date().getDate() - 2)),
+    thumbnailUrl: 'https://placehold.co/400x250.png',
+    thumbnailAiHint: 'oil rig',
+    mainImageUrl: 'https://placehold.co/800x450.png',
+    mainImageAiHint: 'geopolitics map',
   },
 ];
 
@@ -172,7 +188,7 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
   return posts.find(post => post.slug === slug);
 }
 
-export async function addPost(data: { title: string; content: string }): Promise<Post> {
+export async function addPost(data: { title: string; content: string, thumbnailUrl?: string, thumbnailAiHint?: string, mainImageUrl?: string, mainImageAiHint?: string }): Promise<Post> {
   await new Promise(resolve => setTimeout(resolve, 100));
   const newPost: Post = {
     id: String(Date.now()), // Simple unique ID
@@ -181,6 +197,10 @@ export async function addPost(data: { title: string; content: string }): Promise
     content: data.content,
     createdAt: new Date(),
     updatedAt: new Date(),
+    thumbnailUrl: data.thumbnailUrl || `https://placehold.co/400x250.png`,
+    thumbnailAiHint: data.thumbnailAiHint || 'general topic',
+    mainImageUrl: data.mainImageUrl || `https://placehold.co/800x450.png`,
+    mainImageAiHint: data.mainImageAiHint || 'article content',
   };
   // Check for duplicate slugs, append a number if necessary (simplified)
   let currentSlug = newPost.slug;
@@ -195,32 +215,29 @@ export async function addPost(data: { title: string; content: string }): Promise
   return newPost;
 }
 
-export async function updatePost(id: string, data: { title?: string; content?: string }): Promise<Post | undefined> {
+export async function updatePost(id: string, data: Partial<Omit<Post, 'id' | 'slug' | 'createdAt' | 'updatedAt'>> & { title?: string, content?: string }): Promise<Post | undefined> {
   await new Promise(resolve => setTimeout(resolve, 100));
   const postIndex = posts.findIndex(post => post.id === id);
   if (postIndex === -1) {
     return undefined;
   }
   const existingPost = posts[postIndex];
-  const updatedPost = {
-    ...existingPost,
-    ...data,
-    updatedAt: new Date(),
-  };
+  const updatedPostData = { ...existingPost, ...data, updatedAt: new Date() };
+
   if (data.title && data.title !== existingPost.title) {
-    updatedPost.slug = slugify(data.title);
+    updatedPostData.slug = slugify(data.title);
     // Handle slug uniqueness for updated post
-    let currentSlug = updatedPost.slug;
+    let currentSlug = updatedPostData.slug;
     let counter = 1;
     while (posts.some(p => p.id !== id && p.slug === currentSlug)) {
         currentSlug = `${slugify(data.title)}-${counter}`;
         counter++;
     }
-    updatedPost.slug = currentSlug;
+    updatedPostData.slug = currentSlug;
   }
 
-  posts[postIndex] = updatedPost;
-  return updatedPost;
+  posts[postIndex] = updatedPostData as Post; // Cast as Post after merging
+  return posts[postIndex];
 }
 
 export async function deletePost(id: string): Promise<boolean> {

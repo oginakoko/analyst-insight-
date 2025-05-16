@@ -1,11 +1,13 @@
+
 'use client';
 
 import type { Post } from '@/lib/posts';
 import { formatContentForDisplay } from '@/lib/posts';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // For styling recommendations
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
 
 interface BlogPostViewProps {
   post: Post;
@@ -32,6 +34,20 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
             })}
           </p>
         </header>
+
+        {post.mainImageUrl && (
+          <div className="mb-8 aspect-[16/9] relative overflow-hidden rounded-lg shadow-lg">
+            <Image
+              src={post.mainImageUrl}
+              alt={`Main image for ${post.title}`}
+              layout="fill"
+              objectFit="cover"
+              priority // Main image on the page, so prioritize loading
+              data-ai-hint={post.mainImageAiHint || 'article image'}
+            />
+          </div>
+        )}
+        
         <div
           dangerouslySetInnerHTML={{ __html: formattedContent }}
         />
@@ -45,8 +61,20 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {recommendedPosts.map((recPost) => (
-              <Card key={recPost.id} className="flex flex-col">
-                <CardHeader>
+              <Card key={recPost.id} className="flex flex-col shadow-md hover:shadow-lg transition-shadow">
+                {recPost.thumbnailUrl && (
+                   <Link href={`/posts/${recPost.slug}`} className="block aspect-[16/9] relative overflow-hidden rounded-t-lg">
+                    <Image
+                        src={recPost.thumbnailUrl}
+                        alt={`Thumbnail for ${recPost.title}`}
+                        layout="fill"
+                        objectFit="cover"
+                        className="hover:scale-105 transition-transform duration-300"
+                        data-ai-hint={recPost.thumbnailAiHint || 'related article'}
+                    />
+                   </Link>
+                )}
+                <CardHeader className={!recPost.thumbnailUrl ? "pt-6" : ""}>
                   <CardTitle className="text-lg line-clamp-2">
                     <Link href={`/posts/${recPost.slug}`} className="hover:text-primary transition-colors">
                       {recPost.title}
@@ -58,6 +86,11 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
                     {recPost.content.substring(0, 100)}...
                   </p>
                 </CardContent>
+                <CardFooter>
+                   <Link href={`/posts/${recPost.slug}`} className="text-sm text-primary hover:underline">
+                    Read more
+                   </Link>
+                </CardFooter>
               </Card>
             ))}
           </div>

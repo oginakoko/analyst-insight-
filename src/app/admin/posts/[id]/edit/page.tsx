@@ -1,3 +1,4 @@
+
 import { getPostById } from '@/lib/posts';
 import { BlogEditorForm } from '@/components/blog/BlogEditorForm';
 import { updatePostAction } from '@/lib/actions';
@@ -14,6 +15,7 @@ export default async function EditPostPage({ params }: { params: { id: string } 
 
   return (
     <div>
+      <h1 className="text-3xl font-bold mb-6">Edit Post</h1>
       <BlogEditorForm post={post} action={updatePostActionWithId} />
     </div>
   );
