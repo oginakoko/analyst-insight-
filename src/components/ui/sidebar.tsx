@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -260,29 +261,48 @@ const Sidebar = React.forwardRef<
 Sidebar.displayName = "Sidebar"
 
 const SidebarTrigger = React.forwardRef<
-  React.ElementRef<typeof Button>,
+  HTMLButtonElement,
   React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+>(({ className, onClick: parentOnClick, children, asChild = false, ...restProps }, ref) => {
+  const { toggleSidebar } = useSidebar();
+
+  const Comp = asChild ? Slot : Button;
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (parentOnClick) {
+      parentOnClick(event);
+    }
+    toggleSidebar();
+  };
+
+  if (asChild) {
+    return (
+      <Comp
+        ref={ref}
+        className={className} 
+        onClick={handleClick}
+        {...restProps} 
+      >
+        {children}
+      </Comp>
+    );
+  }
 
   return (
-    <Button
-      ref={ref}
+    <Comp 
+      ref={ref as React.Ref<HTMLButtonElement>}
       data-sidebar="trigger"
-      variant="ghost"
-      size="icon"
-      className={cn("h-7 w-7", className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
-      {...props}
+      variant="ghost" 
+      size="icon"     
+      className={cn("h-7 w-7", className)} 
+      onClick={handleClick}
+      {...restProps} 
     >
       <PanelLeft />
       <span className="sr-only">Toggle Sidebar</span>
-    </Button>
-  )
-})
+    </Comp>
+  );
+});
 SidebarTrigger.displayName = "SidebarTrigger"
 
 const SidebarRail = React.forwardRef<
@@ -549,6 +569,7 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
+      children, // Added children here
       ...props
     },
     ref
@@ -564,7 +585,9 @@ const SidebarMenuButton = React.forwardRef<
         data-active={isActive}
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         {...props}
-      />
+      >
+       {children} 
+      </Comp>
     )
 
     if (!tooltip) {
