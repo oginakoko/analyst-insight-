@@ -53,6 +53,21 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
         />
       </article>
 
+      <section className="max-w-3xl mx-auto py-8 px-4 md:px-6 text-center bg-slate-900 rounded-lg shadow-inner">
+        <h2 className="text-xl font-semibold mb-4 text-foreground">Overall Outlook: Bullish</h2>
+        <p className="text-muted-foreground mb-6">
+          The confluence of strong industrial demand, persistent supply deficits, and geopolitical tensions creates a favorable environment for silver prices in 2025. Investors should monitor industrial trends, mining developments, and central bank activity for potential opportunities.
+        </p>
+        <a
+          href="#" // Replace with actual link to the full report
+          className="inline-block bg-primary text-primary-foreground hover:bg-primary/90 font-bold py-3 px-6 rounded-md transition-colors"
+          download
+        >
+          Download Full Report
+        </a>
+      </section>
+
+
       {recommendedPosts && recommendedPosts.length > 0 && (
         <section className="max-w-3xl mx-auto py-8 px-4 md:px-6">
           <Separator className="my-8" />
