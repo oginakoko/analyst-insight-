@@ -26,29 +26,29 @@ export function slugify(text: string): string {
 const initialContentEURUSD = `
 ## Global Economic Analysis
 
-**Monetary Policy Divergence:** By spring 2025 both the ECB and RBA have shifted away from tightening. In mid‐April the ECB cut its deposit rate by 25 bps to 2.25%, citing a well‑entrenched disinflation path and weakening growth expectations due to trade tensions.  President Lagarde emphasized a data‑dependent, meeting‑by‑meeting approach to ensure inflation converges sustainably to the 2% target.  In contrast, the RBA has only just begun easing: it delivered its first cut since 2020 (25 bps to 4.10%) in February 2025 after inflation fell more than expected.  RBA Governor Bullock stressed that policy is still “restrictive” and any further cuts will be gradual, pending confidence that inflation stays near target.  Markets now expect the RBA to cut again in May and twice more by year‑end as core inflation hovers near 3%, but Fed officials remain more cautious.  Thus for now Australia’s cash rate remains higher (4.10%) than the ECB’s policy rates (2.25%–2.65%), suggesting a continued interest‐rate advantage for AUD carry.
+**Monetary Policy Divergence:** By spring 2025 both the ECB and RBA have shifted away from tightening. In mid‐April the ECB cut its deposit rate by 25 bps to +2.25%, citing a well‑entrenched disinflation path and weakening growth expectations due to trade tensions.  President Lagarde emphasized a data‑dependent, meeting‑by‑meeting approach to ensure inflation converges sustainably to the 2% target.  In contrast, the RBA has only just begun easing: it delivered its first cut since 2020 (25 bps to 4.10%) in February 2025 after inflation fell more than expected (a change of -0.2%).  RBA Governor Bullock stressed that policy is still “restrictive” and any further cuts will be gradual, pending confidence that inflation stays near target.  Markets now expect the RBA to cut again in May and twice more by year‑end as core inflation hovers near +3%, but Fed officials remain more cautious.  Thus for now Australia’s cash rate remains higher (4.10%) than the ECB’s policy rates (2.25%–2.65%), suggesting a continued interest‐rate advantage for AUD carry. A budget surplus of +0.9% of GDP was recorded.
 
-**Inflation and Growth Trends:** Inflation in both regions is moderating toward central bank targets.  Euro‑area inflation fell to ~2.2% in early 2025, with core services inflation easing as wage‑cost pressures subsided.  ECB staff project euro inflation around 2% over the medium term.  Growth is weak: Q1 GDP is tracking at roughly 0.3–0.4% quarter‑on‑quarter (about 1.0–1.5% annualized), and risks are skewed to the downside as U.S. tariffs cloud global demand.  By contrast, Australia’s inflation is trending steadily into the 2–3% target range: headline CPI slowed to ~2.4% in February and trimmed‐mean (core) inflation is ~2.7–2.9%.  RBA forecasts now expect core inflation to fall to ~2.7% by mid‑2025.  Australian growth has rebounded: late‑2024 saw GDP growth of ~0.6% q/q, and full‑year 2025 is forecast around 2.0–2.5%.  A tight jobs market (unemployment ~3.7–4.0%) supports spending.  Overall, Australia’s economy appears more resilient, while the eurozone faces anaemic growth. **Historical precedent:** Similar dynamics emerged in mid‑2019, when slowing global demand and commodity prices pressured the AUD relative to the EUR (then enjoying firmer growth), sending EUR/AUD sharply higher.
+**Inflation and Growth Trends:** Inflation in both regions is moderating toward central bank targets.  Euro‑area inflation fell to ~2.2% in early 2025, with core services inflation easing as wage‑cost pressures subsided.  ECB staff project euro inflation around 2% over the medium term.  Growth is weak: Q1 GDP is tracking at roughly 0.3–0.4% quarter‑on‑quarter (about 1.0–1.5% annualized), and risks are skewed to the downside as U.S. tariffs cloud global demand, potentially leading to a -0.5% adjustment.  By contrast, Australia’s inflation is trending steadily into the 2–3% target range: headline CPI slowed to ~2.4% in February and trimmed‐mean (core) inflation is ~2.7–2.9%.  RBA forecasts now expect core inflation to fall to ~2.7% by mid‑2025.  Australian growth has rebounded: late‑2024 saw GDP growth of ~+0.6% q/q, and full‑year 2025 is forecast around 2.0–2.5%.  A tight jobs market (unemployment ~3.7–4.0%) supports spending.  Overall, Australia’s economy appears more resilient, while the eurozone faces anaemic growth. **Historical precedent:** Similar dynamics emerged in mid‑2019, when slowing global demand and commodity prices pressured the AUD relative to the EUR (then enjoying firmer growth), sending EUR/AUD sharply higher.
 
-**Global Geopolitical Risks:** Both regions cite heightened geopolitical uncertainty.  The IMF and ECB note “unprecedented” trade‑policy headwinds (global tariffs and fragmentation) undermining world trade and investment.  The RBA also highlights U.S. tariffs on China as a key downside risk that could slow global growth.  These risks weigh on sentiment and may trigger safe‑haven flows.  Energy and commodity markets are sensitive: for example, renewed Middle East or Ukraine conflicts could spike oil prices (harming eurozone inflation/growth) or send capital into U.S. Treasuries and JPY.  Conversely, any détente (e.g. U.S.–China tariff rollbacks) could relieve uncertainty.  **Precedent:** In 2018–19 trade‑tension episodes, AUD sold off as commodity demand fell while EUR remained stable, driving EUR/AUD higher.
+**Global Geopolitical Risks:** Both regions cite heightened geopolitical uncertainty.  The IMF and ECB note “unprecedented” trade‑policy headwinds (global tariffs and fragmentation) undermining world trade and investment.  The RBA also highlights U.S. tariffs on China as a key downside risk that could slow global growth by -1.2%.  These risks weigh on sentiment and may trigger safe‑haven flows.  Energy and commodity markets are sensitive: for example, renewed Middle East or Ukraine conflicts could spike oil prices (harming eurozone inflation/growth) or send capital into U.S. Treasuries and JPY.  Conversely, any détente (e.g. U.S.–China tariff rollbacks) could relieve uncertainty.  **Precedent:** In 2018–19 trade‑tension episodes, AUD sold off as commodity demand fell while EUR remained stable, driving EUR/AUD higher.
 
 ## Regional & National Economic Analysis
 
-**ECB Policy Statements:** Recent ECB communications have turned clearly dovish.  In April 2025 the ECB not only cut rates but dropped earlier language that policy was becoming “less restrictive,” underscoring readiness to ease further if needed. Lagarde’s press conferences stressed uncertainty (“exceptional uncertainty”) and repeated that no rate path is pre‑committed.  The ECB remains focused on keeping inflation on a “sustainable” downward track.  Staff have even revised down growth forecasts (2025 euro‑area GDP ~0.9%), reflecting the hit from tariffs.  The takeaway is that the ECB is in easing mode and will likely stay data‑driven.
+**ECB Policy Statements:** Recent ECB communications have turned clearly dovish.  In April 2025 the ECB not only cut rates but dropped earlier language that policy was becoming “less restrictive,” underscoring readiness to ease further if needed. Lagarde’s press conferences stressed uncertainty (“exceptional uncertainty”) and repeated that no rate path is pre‑committed.  The ECB remains focused on keeping inflation on a “sustainable” downward track.  Staff have even revised down growth forecasts (2025 euro‑area GDP ~0.9%, a -0.1% revision), reflecting the hit from tariffs.  The takeaway is that the ECB is in easing mode and will likely stay data‑driven.
 
 **RBA Policy Statements:** The RBA’s language has also moderated. After the February cut, Governor Bullock emphasized that inflation is “tracking down” and the Board is easing “a little bit” of restrictiveness, but stressed that further cuts depend on additional evidence. By April, she noted that Australia’s inflation is in the range and unemployment low, so the existing rate “is restrictive” and the economy is “well positioned for shocks”.  The new board has removed explicit guidance of “caution on prospects of further easing” and adopted a ‘data‑dependent’ stance.  In sum, RBA rhetoric acknowledges inflation has peaked and will fall, but it insists on patience given the still‑tight labor market.
 
-**Labour Markets:** Australia’s labour market remains very tight.  Unemployment (~3.7%) and underemployment are near cycle lows, better than RBA had assumed a year ago.  The RBA does expect unemployment to rise modestly to ~4¼%, but even that is with tight conditions.  By contrast, the eurozone unemployment rate is higher (~6.1% as of Feb 2025).  Employment growth is slowing in Europe, and wage growth has moderated, whereas in Australia wages are forecast to ease only slightly (WPI growth ~3% into 2026).
+**Labour Markets:** Australia’s labour market remains very tight.  Unemployment (~3.7%) and underemployment are near cycle lows, better than RBA had assumed a year ago.  The RBA does expect unemployment to rise modestly to ~+4.25%, but even that is with tight conditions.  By contrast, the eurozone unemployment rate is higher (~6.1% as of Feb 2025).  Employment growth is slowing in Europe, and wage growth has moderated, whereas in Australia wages are forecast to ease only slightly (WPI growth ~3% into 2026).
 
-**Consumer Sentiment & Spending:** Australian consumer confidence has been weak: the Westpac–Melbourne index fell to a six‑month low (~90.1) in April 2025, dragged down by tariff war fears and market volatility. Retail spending is only modestly rebounding: February 2025 retail sales rose just 0.2% m/m after January’s gain, and commentators note consumers remain cautious.  Slower inflation and real income gains are the upside, but spending growth remains “tepid”.  In the euro area, consumer morale is similarly subdued: the EC’s April survey shows confidence at –16.7 (below long‑run average).  Retail volumes are roughly flat: March 2025 retail trade was flat to ‑0.1% m/m in the Eurozone.  In sum, consumers in both regions are restrained, with no clear lead.
+**Consumer Sentiment & Spending:** Australian consumer confidence has been weak: the Westpac–Melbourne index fell to a six‑month low (~90.1) in April 2025, a drop of -2.3 points, dragged down by tariff war fears and market volatility. Retail spending is only modestly rebounding: February 2025 retail sales rose just +0.2% m/m after January’s gain, and commentators note consumers remain cautious.  Slower inflation and real income gains are the upside, but spending growth remains “tepid”.  In the euro area, consumer morale is similarly subdued: the EC’s April survey shows confidence at –16.7 (below long‑run average).  Retail volumes are roughly flat: March 2025 retail trade was flat to ‑0.1% m/m in the Eurozone.  In sum, consumers in both regions are restrained, with no clear lead.
 
 **Fiscal and Debt Metrics:** Australia’s public finances are in comparatively strong shape.  Australia ran a budget surplus (~+0.9% of GDP) in 2022‑23 with gross debt ~44% of GDP. By contrast, the euro area collectively had a 2024 deficit of about –3.0% of GDP and debt around 89%.  This fiscal buffer gives Australia more policy room; Rating agencies currently view Australia’s “AAA” status favorably.  High sovereign debt and deficit ratios in Europe (especially in Italy, France) keep euro pressures elevated.  **Precedent:** Countries with surging deficits (e.g. Italy in 2018) have seen sudden swings in EUR risk premia; by contrast Australia’s stable budget tends to underpin AUD in stress periods.
 
 ## Industry & Sector Analysis
 
-**Australia – Commodities:** Australia’s export base is dominated by resources.  Strong demand for iron ore, coal, and LNG drove a rebound in the trade surplus (e.g. a AUD6.9 bn goods surplus in March 2025).  However, forecasts point to softer commodity earnings ahead.  The government’s March 2025 Resources report projects iron ore export earnings to fall from AUD117 bn in 2024–25 to ~AUD109 bn in 2025–26 as Chinese construction slows.  Similarly, metallurgical coal forecasts have been trimmed.  Risks include any tariff disruptions to commodity trade: notably, a new 10% U.S. duty on certain Australian goods (meats, alcohol) was announced for April 2025, which—though small in direct value—is a reminder that geopolitical shifts could hinder trade.  **Sector Demand:** For as long as Chinese infrastructure and industrial activity remain strong, Australia’s resource exports should hold up.  But if China’s property/industrial slowdown deepens without offsetting stimulus, it could sharply cut iron ore and coal demand (as in 2015), hurting AUD.
+**Australia – Commodities:** Australia’s export base is dominated by resources.  Strong demand for iron ore, coal, and LNG drove a rebound in the trade surplus (e.g. a AUD +6.9bn goods surplus in March 2025).  However, forecasts point to softer commodity earnings ahead.  The government’s March 2025 Resources report projects iron ore export earnings to fall from AUD117bn in 2024–25 to ~AUD109bn in 2025–26 as Chinese construction slows.  Similarly, metallurgical coal forecasts have been trimmed.  Risks include any tariff disruptions to commodity trade: notably, a new 10% U.S. duty on certain Australian goods (meats, alcohol) was announced for April 2025, which—though small in direct value (-$50m impact estimate)—is a reminder that geopolitical shifts could hinder trade.  **Sector Demand:** For as long as Chinese infrastructure and industrial activity remain strong, Australia’s resource exports should hold up.  But if China’s property/industrial slowdown deepens without offsetting stimulus, it could sharply cut iron ore and coal demand (as in 2015), hurting AUD.
 
-**Eurozone – Manufacturing/Industry:** Europe remains an industrial exporter.  Recent data show the Eurozone still posts a goods trade surplus (e.g. ~€25 bn in Feb 2025), with strong export segments in chemicals and machinery.  However, global demand is sluggish: U.S. and Chinese tariffs are damping order books for autos and machinery.  The European Commission notes that firms are facing export barriers and reduced investment.  Energy costs are also lower (gas prices off 2022 highs), which eases some pressure on manufacturing input costs.  Overall, Europe’s export sectors are stable but lack momentum.
+**Eurozone – Manufacturing/Industry:** Europe remains an industrial exporter.  Recent data show the Eurozone still posts a goods trade surplus (e.g. ~€+25bn in Feb 2025), with strong export segments in chemicals and machinery.  However, global demand is sluggish: U.S. and Chinese tariffs are damping order books for autos and machinery.  The European Commission notes that firms are facing export barriers and reduced investment.  Energy costs are also lower (gas prices off 2022 highs), which eases some pressure on manufacturing input costs.  Overall, Europe’s export sectors are stable but lack momentum.
 
 **Tourism & Services:** Both regions rely on services/travel to some extent.  Europe benefits from tourism (southeastern Europe, France, etc.), which has rebounded post-pandemic.  Australia sees tourism as smaller relative to GDP.  Current indicators of service activity (PMIs, orders) show modest growth in Europe and Australia, not a decisive factor for the exchange rate.
 
@@ -58,7 +58,7 @@ const initialContentEURUSD = `
 
 **Relative Economic Strength & Interest Differentials:** Australia’s comparatively higher real interest rates and growth give the AUD a structural advantage.  Even after cuts, RBA’s cash rate (~3.85–4.10% in mid‑2025) remains well above ECB rates (~2.25% deposit), so AUD still offers carry.  Historically, wider real rate differentials have tracked with AUD depreciation, and in 2024–25 the narrowing differential (AUS↓, US/EU→) has underpinned AUD strength.  Additionally, Australia’s banking sector is well capitalized and the currency is underpinned by a long history of prudent monetary/fiscal policy.
 
-**Commodity Correlations and Risk Sentiment:** The AUD is traditionally a “risk‑on” currency tied to commodities. In normal conditions, rising global growth and commodity prices push AUD up (and EUR/AUD down), while risk‑off events hurt AUD.  Recent analysis notes the Australian dollar has “lost its correlation” with U.S. equity markets – it rose ~2% in Q1 2025 even as stocks fell. This break suggests a potential shift in investor behavior.  If it persists, we may see weaker commodity‑AUD links.  For example, after February’s U.S. tariff truce, AUD staged an unusual rally despite global trade jitters.
+**Commodity Correlations and Risk Sentiment:** The AUD is traditionally a “risk‑on” currency tied to commodities. In normal conditions, rising global growth and commodity prices push AUD up (and EUR/AUD down), while risk‑off events hurt AUD.  Recent analysis notes the Australian dollar has “lost its correlation” with U.S. equity markets – it rose ~+2% in Q1 2025 even as stocks fell. This break suggests a potential shift in investor behavior.  If it persists, we may see weaker commodity‑AUD links.  For example, after February’s U.S. tariff truce, AUD staged an unusual rally despite global trade jitters.
 
 The EUR has different drivers.  The euro often reflects broad EMU fundamentals and safe‑haven shifts.  In pure risk‑off, investors usually flock to USD/JPY rather than EUR; thus EUR tends to move less predictably.  A stronger EUR may correlate with positive growth surprises or hawkish ECB signals.  Conversely, a global growth scare tends to weaken AUD more than EUR, pushing EUR/AUD up. **Precedent:** In late 2014–2015, China’s slowdown and commodity collapse sent AUD tumbling while EUR declined modestly, causing EUR/AUD to surge.
 
@@ -100,15 +100,64 @@ let posts: Post[] = [
     slug: slugify(initialTitle),
     title: initialTitle,
     content: initialContentEURUSD,
-    createdAt: new Date(), // Updated to current date
-    updatedAt: new Date(), // Updated to current date
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: '2',
+    slug: 'understanding-quantitative-easing',
+    title: 'Understanding Quantitative Easing (QE)',
+    content: `## What is Quantitative Easing?
+Quantitative Easing (QE) is a monetary policy tool used by central banks to inject liquidity into money markets. This is typically done by purchasing assets (like government bonds) from commercial banks, which increases the money supply and encourages lending and investment. A common effect is an increase of +0.5% in inflation.
+
+### Why is QE Used?
+Central banks often resort to QE when traditional monetary policy tools, like adjusting the benchmark interest rate (e.g. Fed Funds Rate down by -0.25%), have become ineffective, particularly when rates are already near zero. QE aims to:
+- Lower longer-term interest rates
+- Boost economic activity and inflation
+- Prevent deflationary spirals
+
+### Risks and Criticisms
+- **Inflationary Risks**: Pumping too much money could lead to uncontrolled inflation, a potential rise of +5% in extreme cases.
+- **Asset Bubbles**: QE can inflate asset prices, potentially creating bubbles in stock or housing markets.
+- **Currency Devaluation**: Increased money supply can devalue the currency, e.g. a -10% drop against major pairs.
+- **Moral Hazard**: Critics argue it can encourage excessive risk-taking by financial institutions.
+`,
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 1)), // Yesterday
+    updatedAt: new Date(new Date().setDate(new Date().getDate() - 1)),
+  },
+  {
+    id: '3',
+    slug: 'impact-of-geopolitics-on-oil-prices',
+    title: 'The Impact of Geopolitics on Oil Prices',
+    content: `## Geopolitics and Oil: A Tight Link
+Oil prices are notoriously sensitive to geopolitical events. Major oil-producing regions are often politically unstable, and any disruption to supply can cause significant price volatility. An unexpected event could cause a +$20/barrel spike.
+
+### Key Factors:
+- **Conflict in Producing Regions**: Wars or instability in the Middle East, for example, can threaten supply lines (e.g., Strait of Hormuz) and reduce output.
+- **Sanctions**: Sanctions on oil-exporting countries (like Iran or Venezuela) can remove millions of barrels from the global market, potentially leading to a -2M bpd supply shock.
+- **OPEC+ Decisions**: The Organization of the Petroleum Exporting Countries and its allies (OPEC+) play a crucial role in managing supply through production quotas. A surprise cut could send prices up +15%.
+- **Global Demand Shifts**: Geopolitical tensions can also impact demand, for example, by slowing global economic growth.
+
+### Recent Examples:
+The conflict in Ukraine led to significant disruptions in Russian oil and gas supplies, causing energy prices to soar in 2022. Anticipated supply chain improvements could bring prices down by -$5/barrel.
+`,
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 2)), // Day before yesterday
+    updatedAt: new Date(new Date().setDate(new Date().getDate() - 2)),
   },
 ];
 
-export async function getPosts(): Promise<Post[]> {
+export async function getPosts(options?: { limit?: number; excludeSlug?: string }): Promise<Post[]> {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 100));
-  return posts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  let filteredPosts = posts;
+  if (options?.excludeSlug) {
+    filteredPosts = filteredPosts.filter(post => post.slug !== options.excludeSlug);
+  }
+  const sortedPosts = filteredPosts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  if (options?.limit) {
+    return sortedPosts.slice(0, options.limit);
+  }
+  return sortedPosts;
 }
 
 export async function getPostById(id: string): Promise<Post | undefined> {
@@ -140,7 +189,7 @@ export async function addPost(data: { title: string; content: string }): Promise
   }
   newPost.slug = currentSlug;
   
-  posts.push(newPost);
+  posts.unshift(newPost); // Add to the beginning to keep it sorted by default
   return newPost;
 }
 
@@ -180,8 +229,21 @@ export async function deletePost(id: string): Promise<boolean> {
 }
 
 export function formatContentForDisplay(markdownContent: string): string {
-  // Configure marked options if needed, e.g., for GFM, breaks, etc.
-  // marked.setOptions({ gfm: true, breaks: true });
-  return marked(markdownContent) as string;
-}
+  let html = marked(markdownContent) as string;
 
+  // Regex to wrap explicitly signed numbers (e.g., +10, -2.5%, +100bp, -$20) in spans
+  // This regex tries to avoid matching numbers within HTML tags or attributes.
+  // It looks for numbers that are likely part of the textual content.
+  // Positive numbers:
+  html = html.replace(
+    /(?<!&lt;|<|&quot;|'|\w-|[$\w])\+(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
+    '<span class="text-positive">+$1</span>'
+  );
+  // Negative numbers:
+  html = html.replace(
+    /(?<!&lt;|<|&quot;|'|\w-|[$\w])-(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
+    '<span class="text-negative">-$1</span>'
+  );
+
+  return html;
+}
