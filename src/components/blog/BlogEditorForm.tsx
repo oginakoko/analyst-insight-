@@ -1,8 +1,9 @@
+
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
-import { useRouter } from 'next/navigation'; // Corrected import
+import { useEffect, useState, useActionState } from 'react'; // Changed import
+import { useFormStatus } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -37,7 +38,8 @@ export function BlogEditorForm({ post, action }: BlogEditorFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const initialState: FormState = { message: '', errors: {} };
-  const [formState, formAction] = useFormState(action, initialState);
+  // Updated to use React.useActionState
+  const [formState, formAction] = useActionState(action, initialState);
 
   const [title, setTitle] = useState(post?.title || '');
   const [content, setContent] = useState(post?.content || '');
