@@ -1,4 +1,3 @@
-
 // This is a simplified in-memory store for demonstration purposes.
 import { doc, getDoc, getDocs, collection, addDoc, updateDoc, deleteDoc, query, orderBy, where as firestoreWhere, limit as firestoreLimit, Timestamp } from 'firebase/firestore';
 import { db } from './firebase'; // Assuming db is exported from your firebase config file
