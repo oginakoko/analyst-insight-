@@ -10,7 +10,7 @@ import {
   signInWithPopup,
   signOut as firebaseSignOut,
   signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
-  createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword
+  // createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword // Optional: if you add sign up
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -20,7 +20,7 @@ interface AuthContextType {
   isAdmin: boolean;
   signInWithGoogle: () => Promise<User | null>;
   signInWithEmail: (email: string, password: string) => Promise<User | null>;
-  // createUserWithEmail: (email: string, password: string) => Promise<User | null>; // Optional: if you add sign up
+  // createUserWithEmail: (email: string, password: string) => Promise<User | null>; 
   signOut: () => Promise<void>;
 }
 
@@ -35,7 +35,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        setIsAdmin(currentUser.uid === process.env.NEXT_PUBLIC_ADMIN_UID);
+        // Ensure NEXT_PUBLIC_ADMIN_UID is defined and accessible
+        if (typeof process.env.NEXT_PUBLIC_ADMIN_UID === 'string') {
+          setIsAdmin(currentUser.uid === process.env.NEXT_PUBLIC_ADMIN_UID);
+        } else {
+          console.warn("NEXT_PUBLIC_ADMIN_UID is not defined. Admin check will fail.");
+          setIsAdmin(false);
+        }
       } else {
         setIsAdmin(false);
       }
@@ -51,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return result.user;
     } catch (error) {
       console.error("Error signing in with Google:", error);
-      return null;
+      throw error; // Re-throw the error to be caught by the caller
     }
   };
 
@@ -61,8 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return result.user;
     } catch (error) {
       console.error("Error signing in with email:", error);
-      // Consider returning error message to display to user
-      return null;
+      throw error; // Re-throw the error to be caught by the caller
     }
   };
 
@@ -72,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   //     return result.user;
   //   } catch (error) {
   //     console.error("Error creating user with email:", error);
-  //     return null;
+  //     throw error; 
   //   }
   // };
 
@@ -81,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await firebaseSignOut(auth);
     } catch (error) {
       console.error("Error signing out:", error);
+      // Optionally re-throw or handle as needed
     }
   };
 
