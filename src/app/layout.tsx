@@ -39,14 +39,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <AuthGuard>
-              <Header />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-              <Toaster />
-            </AuthGuard>
+            <Header />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+            <Toaster />
           </AuthProvider>
         </ThemeProvider>
       </body>

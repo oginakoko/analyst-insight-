@@ -8,33 +8,56 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug);
-  if (!post) {
+  if (!params?.slug) {
     return {
-      title: 'Post Not Found',
+      title: 'Invalid Post URL',
     };
   }
+
+  try {
+    const post = await getPostBySlug(params.slug);
+    if (!post) {
+      return {
+        title: 'Post Not Found',
+      };
+    }
   return {
     title: `${post.title} | Analyst's Insight`,
     description: post.content.substring(0, 160), // Consider a more robust excerpt generation
   };
+  } catch (error) {
+    console.error('Error fetching post metadata:', error);
+    return {
+      title: 'Error Loading Post',
+      description: 'There was an error loading this post.'
+    };
+  }
 }
 
 export default async function PostPage({ params }: Props) {
-  const post = await getPostBySlug(params.slug);
-
-  if (!post) {
+  if (!params?.slug) {
     notFound();
   }
 
-  // Fetch other posts for recommendations, excluding the current one, limit to 3
-  const recommendedPosts = await getPosts({ limit: 3, excludeSlug: post.slug });
+  try {
+    const post = await getPostBySlug(params.slug);
 
-  return (
-    <div className="container mx-auto px-4 md:px-6">
-      <BlogPostView post={post} recommendedPosts={recommendedPosts} />
-    </div>
-  );
+    if (!post) {
+      notFound();
+    }
+
+    // Fetch other posts for recommendations, excluding the current one, limit to 3
+    const recommendedPosts = await getPosts({ limit: 3, excludeSlug: post.slug });
+
+    return (
+      <div className="container mx-auto px-4 md:px-6">
+        <BlogPostView post={post} recommendedPosts={recommendedPosts} />
+      </div>
+    );
+  } catch (error) {
+    console.error('Error loading post:', error);
+    notFound();
+  }
 }
 
 // Optional: If you have many posts and want to pre-render them at build time

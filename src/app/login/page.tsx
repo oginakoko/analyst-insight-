@@ -26,8 +26,11 @@ export default function LoginPage() {
   useEffect(() => {
     // Only redirect if user is authenticated AND we're not currently logging in
     if (!authLoading && user && !isLoggingInEmail && !isLoggingInGoogle) {
-      const safeRedirect = redirect === '/login' ? '/' : redirect;
-      router.push(safeRedirect);
+      // Default to latest analysis page for authenticated users
+      const defaultRedirect = '/admin/latest-analysis';
+      // Use provided redirect or default, but never redirect back to login
+      const safeRedirect = redirect === '/login' ? defaultRedirect : (redirect || defaultRedirect);
+      router.replace(safeRedirect);
     }
   }, [user, authLoading, router, redirect, isLoggingInEmail, isLoggingInGoogle]);
 

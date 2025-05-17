@@ -1,10 +1,6 @@
 
-'use client';
-
-import { useEffect } from 'react';
+import ProtectedLayout from './protected-layout';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
 import {
   SidebarProvider,
   Sidebar,
@@ -24,29 +20,9 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isAdmin, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.replace('/login?redirect=/admin/posts');
-      } else if (!isAdmin) {
-        router.replace('/'); // Or a dedicated 'access-denied' page
-      }
-    }
-  }, [user, isAdmin, loading, router]);
-
-  if (loading || !user || !isAdmin) {
-    return (
-      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="ml-4 text-muted-foreground">Loading or checking authorization...</p>
-      </div>
-    );
-  }
 
   return (
+    <ProtectedLayout>
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-[calc(100vh-4rem)]"> {/* Adjust min-height based on header height */}
         <Sidebar collapsible="icon" side="left" variant="sidebar" className="border-r bg-sidebar text-sidebar-foreground">
@@ -98,5 +74,6 @@ export default function AdminLayout({
         </SidebarInset>
       </div>
     </SidebarProvider>
+    </ProtectedLayout>
   );
 }
