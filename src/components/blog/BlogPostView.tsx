@@ -2,12 +2,16 @@
 'use client';
 
 import type { Post } from '@/lib/posts';
-import { formatContentForDisplay } from '@/lib/posts';
-import { useEffect, useState } from 'react';
+import { formatContentForDisplay, generatePdfContent } from '@/lib/posts';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
+import Script from 'next/script';
+import { useToast } from '@/hooks/use-toast';
 
 interface BlogPostViewProps {
   post: Post;
@@ -15,15 +19,54 @@ interface BlogPostViewProps {
 }
 
 export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
+  const [isGeneratingPdf, setIsGeneratingPdf] = React.useState(false);
+  const { toast } = useToast();
   const [formattedContent, setFormattedContent] = useState('');
 
   useEffect(() => {
     setFormattedContent(formatContentForDisplay(post.content));
   }, [post.content]);
+  
+  const handleDownloadPdf = () => {
+    // Generate PDF content
+    const pdfContent = generatePdfContent(post);
+    
+    // Create a Blob with the HTML content
+    const blob = new Blob([pdfContent], { type: 'text/html' });
+    
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary anchor element
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${post.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.html`;
+    
+    // Trigger the download
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <>
-      <article className="prose prose-lg dark:prose-invert max-w-none mx-auto py-8 px-4 md:px-6">
+      {/* Load html2pdf.js library */}
+      <Script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" 
+        strategy="lazyOnload"
+        onError={() => {
+          toast({
+            title: 'Library Load Error',
+            description: 'Failed to load PDF generation library',
+            variant: 'destructive'
+          });
+        }}
+      />
+      
+      <article className="prose prose-lg dark:prose-invert max-w-none mx-auto p-8 backdrop-blur-lg bg-gray-50/80 dark:bg-black/30 rounded-xl shadow-lg ring-1 ring-black/10 dark:ring-white/10 transition-all duration-300 hover:shadow-xl hover:ring-black/20 dark:hover:ring-white/20">
         <header className="mb-8">
           <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl">{post.title}</h1>
           <p className="mt-2 text-lg text-muted-foreground">
@@ -53,18 +96,28 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
         />
       </article>
 
-      <section className="max-w-3xl mx-auto py-8 px-4 md:px-6 text-center bg-slate-900 rounded-lg shadow-inner">
+      <section className="max-w-3xl mx-auto py-8 px-4 md:px-6 text-center backdrop-blur-lg bg-gray-50/80 dark:bg-black/30 rounded-xl shadow-lg ring-1 ring-black/10 dark:ring-white/10 transition-all duration-300 hover:shadow-xl hover:ring-black/20 dark:hover:ring-white/20">
         <h2 className="text-xl font-semibold mb-4 text-foreground">Overall Outlook: Bullish</h2>
         <p className="text-muted-foreground mb-6">
           The confluence of strong industrial demand, persistent supply deficits, and geopolitical tensions creates a favorable environment for silver prices in 2025. Investors should monitor industrial trends, mining developments, and central bank activity for potential opportunities.
         </p>
-        <a
-          href="#" // Replace with actual link to the full report
-          className="inline-block bg-primary text-primary-foreground hover:bg-primary/90 font-bold py-3 px-6 rounded-md transition-colors"
-          download
+        <Button
+          onClick={handleDownloadPdf}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold py-3 px-6 rounded-md transition-colors"
+          disabled={isGeneratingPdf}
         >
-          Download Full Report
-        </a>
+          {isGeneratingPdf ? (
+            <>
+              <span className="animate-spin mr-2">⏳</span>
+              Generating PDF...
+            </>
+          ) : (
+            <>
+              <Download className="mr-2 h-4 w-4" />
+              Download Article as PDF
+            </>
+          )}
+        </Button>
       </section>
 
 

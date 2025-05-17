@@ -84,9 +84,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
+      setUser(null); // Explicitly clear user state
+      setIsAdmin(false); // Reset admin status
     } catch (error) {
       console.error("Error signing out:", error);
-      // Optionally re-throw or handle as needed
+      throw error; // Re-throw to allow error handling in components
     }
   };
 

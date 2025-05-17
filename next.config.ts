@@ -9,6 +9,18 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  env: {
+    GENKIT_DISABLE_TELEMETRY: 'true',
+  },
+  webpack: (config, { isServer }) => {
+    // Handle OpenTelemetry issues
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@opentelemetry/exporter-jaeger': false,
+    };
+    
+    return config;
+  },
   images: {
     remotePatterns: [
       {

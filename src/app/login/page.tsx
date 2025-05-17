@@ -24,10 +24,12 @@ export default function LoginPage() {
   const redirect = searchParams.get('redirect') || '/';
 
   useEffect(() => {
-    if (!authLoading && user) {
-      router.push(redirect);
+    // Only redirect if user is authenticated AND we're not currently logging in
+    if (!authLoading && user && !isLoggingInEmail && !isLoggingInGoogle) {
+      const safeRedirect = redirect === '/login' ? '/' : redirect;
+      router.push(safeRedirect);
     }
-  }, [user, authLoading, router, redirect]);
+  }, [user, authLoading, router, redirect, isLoggingInEmail, isLoggingInGoogle]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault(); 

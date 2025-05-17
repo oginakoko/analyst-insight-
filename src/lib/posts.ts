@@ -227,18 +227,140 @@ export async function deletePost(id: string): Promise<void> {
 export function formatContentForDisplay(markdownContent: string): string {
   let html = marked(markdownContent) as string;
 
-  // Regex to wrap explicitly signed numbers in spans
+  // Regex to wrap explicitly signed numbers in spans with more vibrant styling
   // Handles numbers like +5, +5.5, +5bp, +5.5%
   html = html.replace(
     /(?<!&lt;|<|&quot;|'|\w-|[$\w])\+(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
-    '<span class="text-positive">+$1</span>'
+    '<span class="text-positive font-bold">+$1</span>'
   );
   // Handles numbers like -5, –5, -5.5, –5.5bp, -5% (hyphen or en-dash)
   html = html.replace(
     /(?<!&lt;|<|&quot;|'|\w-|[$\w])(?:-|–)(\d*\.?\d+(?:bp|%)?)(?![-\w])/g,
-    '<span class="text-negative">-$1</span>'
+    '<span class="text-negative font-bold">-$1</span>'
   );
 
+  // Enhanced color coding for important financial terms with more vibrant colors
+  const financialTerms = {
+    // Interest rate related terms - vibrant blue
+    'interest rate': 'text-blue-600 font-semibold',
+    'policy rate': 'text-blue-600 font-semibold',
+    'deposit rate': 'text-blue-600 font-semibold',
+    'cash rate': 'text-blue-600 font-semibold',
+    'rate cut': 'text-blue-600 font-semibold',
+    'rate hike': 'text-blue-600 font-semibold',
+    'fed funds': 'text-blue-600 font-semibold',
+    'basis points': 'text-blue-600 font-semibold',
+    'bps': 'text-blue-600 font-semibold',
+    
+    // GDP related terms - vibrant green
+    'GDP': 'text-emerald-600 font-semibold',
+    'growth': 'text-emerald-600 font-semibold',
+    'economic growth': 'text-emerald-600 font-semibold',
+    'recession': 'text-red-600 font-bold',
+    
+    // Inflation related terms - vibrant amber
+    'inflation': 'text-amber-600 font-semibold',
+    'CPI': 'text-amber-600 font-semibold',
+    'disinflation': 'text-amber-600 font-semibold',
+    'deflation': 'text-amber-600 font-semibold',
+    'consumer price': 'text-amber-600 font-semibold',
+    'price growth': 'text-amber-600 font-semibold',
+    'core inflation': 'text-amber-600 font-semibold',
+    'price index': 'text-amber-600 font-semibold',
+    'price stability': 'text-amber-600 font-semibold',
+    
+    // Employment related terms - vibrant purple
+    'unemployment': 'text-purple-600 font-semibold',
+    'employment': 'text-purple-600 font-semibold',
+    'jobs': 'text-purple-600 font-semibold',
+    'labor market': 'text-purple-600 font-semibold',
+    'labour market': 'text-purple-600 font-semibold',
+    'job growth': 'text-purple-600 font-semibold',
+    'payrolls': 'text-purple-600 font-semibold',
+    'jobless': 'text-purple-600 font-semibold',
+    'labor force': 'text-purple-600 font-semibold',
+    'nonfarm payrolls': 'text-purple-600 font-semibold',
+    'wage growth': 'text-purple-600 font-semibold',
+    
+    // Central bank related terms - vibrant indigo
+    'ECB': 'text-indigo-600 font-semibold',
+    'RBA': 'text-indigo-600 font-semibold',
+    'Federal Reserve': 'text-indigo-600 font-semibold',
+    'Fed': 'text-indigo-600 font-semibold',
+    'central bank': 'text-indigo-600 font-semibold',
+    'European Central Bank': 'text-indigo-600 font-semibold',
+    'BOE': 'text-indigo-600 font-semibold',
+    'Bank of England': 'text-indigo-600 font-semibold',
+    'BOJ': 'text-indigo-600 font-semibold',
+    'Bank of Japan': 'text-indigo-600 font-semibold',
+    'PBOC': 'text-indigo-600 font-semibold',
+    'People\'s Bank of China': 'text-indigo-600 font-semibold',
+    'Reserve Bank of Australia': 'text-indigo-600 font-semibold',
+    'monetary policy': 'text-indigo-600 font-semibold',
+    'quantitative easing': 'text-indigo-600 font-semibold',
+    'QE': 'text-indigo-600 font-semibold',
+    
+    // Trade related terms - vibrant orange
+    'tariff': 'text-orange-600 font-semibold',
+    'trade': 'text-orange-600 font-semibold',
+    'export': 'text-orange-600 font-semibold',
+    'import': 'text-orange-600 font-semibold',
+    'deficit': 'text-orange-600 font-semibold',
+    'surplus': 'text-orange-600 font-semibold',
+    'trade war': 'text-orange-600 font-semibold',
+    'trade balance': 'text-orange-600 font-semibold',
+    'global trade': 'text-orange-600 font-semibold'
+  };
+
+  // Apply color coding to financial terms
+  Object.entries(financialTerms).forEach(([term, className]) => {
+    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+    html = html.replace(regex, `<span class="${className} font-medium">$&</span>`);
+  });
+
+  return html;
+}
+
+export function generatePdfContent(post: Post): string {
+  // Create a simple HTML template for the PDF
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${post.title}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1 { color: #333; font-size: 24px; margin-bottom: 20px; }
+        .date { color: #666; margin-bottom: 30px; }
+        .content { margin-top: 20px; }
+        .positive { color: green; }
+        .negative { color: red; }
+        .financial-term { font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <h1>${post.title}</h1>
+      <div class="date">Published on ${new Date(post.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}</div>
+      <div class="content">${formatContentForPdf(post.content)}</div>
+    </body>
+    </html>
+  `;
+}
+
+export function formatContentForPdf(markdownContent: string): string {
+  let html = marked(markdownContent) as string;
+  
+  // Replace HTML color spans with PDF-friendly classes
+  html = html.replace(/<span class="text-positive">([^<]+)<\/span>/g, '<span class="positive">$1</span>');
+  html = html.replace(/<span class="text-negative">([^<]+)<\/span>/g, '<span class="negative">$1</span>');
+  
+  // Replace all other colored financial terms with a simple bold class
+  html = html.replace(/<span class="[^"]+font-medium">([^<]+)<\/span>/g, '<span class="financial-term">$1</span>');
+  
   return html;
 }
 
