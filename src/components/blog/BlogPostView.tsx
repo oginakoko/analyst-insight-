@@ -94,9 +94,36 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
         <div
           dangerouslySetInnerHTML={{ __html: formattedContent }}
         />
+
+        {/* Moved Overall Outlook section inside the article */}
+        <Separator className="my-8" />
+        <section className="text-center py-8">
+          <h2 className="text-xl font-semibold mb-4 text-foreground">Overall Outlook: Bullish</h2>
+          <p className="text-muted-foreground mb-6">
+            The confluence of strong industrial demand, persistent supply deficits, and geopolitical tensions creates a favorable environment for silver prices in 2025. Investors should monitor industrial trends, mining developments, and central bank activity for potential opportunities.
+          </p>
+          <Button
+            onClick={handleDownloadPdf}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold py-3 px-6 rounded-md transition-colors"
+            disabled={isGeneratingPdf}
+          >
+            {isGeneratingPdf ? (
+              <>
+                <span className="animate-spin mr-2">⏳</span>
+                Generating PDF...
+              </>
+            ) : (
+              <>
+                <Download className="mr-2 h-4 w-4" />
+                Download Article as PDF
+              </>
+            )}
+          </Button>
+        </section>
       </article>
 
-      <section className="max-w-3xl mx-auto py-8 px-4 md:px-6 text-center backdrop-blur-lg bg-gray-50/80 dark:bg-black/30 rounded-xl shadow-lg ring-1 ring-black/10 dark:ring-white/10 transition-all duration-300 hover:shadow-xl hover:ring-black/20 dark:hover:ring-white/20">
+      {/* Removed the original separate section for Overall Outlook */}
+      {/* <section className="max-w-3xl mx-auto py-8 px-4 md:px-6 text-center backdrop-blur-lg bg-gray-50/80 dark:bg-black/30 rounded-xl shadow-lg ring-1 ring-black/10 dark:ring-white/10 transition-all duration-300 hover:shadow-xl hover:ring-black/20 dark:hover:ring-white/20">
         <h2 className="text-xl font-semibold mb-4 text-foreground">Overall Outlook: Bullish</h2>
         <p className="text-muted-foreground mb-6">
           The confluence of strong industrial demand, persistent supply deficits, and geopolitical tensions creates a favorable environment for silver prices in 2025. Investors should monitor industrial trends, mining developments, and central bank activity for potential opportunities.
@@ -118,8 +145,7 @@ export function BlogPostView({ post, recommendedPosts }: BlogPostViewProps) {
             </>
           )}
         </Button>
-      </section>
-
+      </section> */} 
 
       {recommendedPosts && recommendedPosts.length > 0 && (
         <section className="max-w-3xl mx-auto py-8 px-4 md:px-6">

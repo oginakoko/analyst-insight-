@@ -8,14 +8,16 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  if (!params?.slug) {
+  const { slug } = await params; // Added await here
+
+  if (!slug) {
     return {
       title: 'Invalid Post URL',
     };
   }
 
   try {
-    const post = await getPostBySlug(params.slug);
+    const post = await getPostBySlug(slug);
     if (!post) {
       return {
         title: 'Post Not Found',
@@ -35,12 +37,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Props) {
-  if (!params?.slug) {
+  const { slug } = await params; // Added await here
+
+  if (!slug) {
     notFound();
   }
 
   try {
-    const post = await getPostBySlug(params.slug);
+    const post = await getPostBySlug(slug);
 
     if (!post) {
       notFound();
